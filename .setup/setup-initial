@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+
+DOTFILES=".dotfiles"
+
+if [ -d "$(xcode-select -p)" ]; then
+    echo "✔ Command Line Tools already installed."
+else
+    echo "Installing Command Line Tools"
+    xcode-select --install
+fi
+
+dots=(
+    .bin/
+    .pip/
+    .vim/
+    .ssh/
+    .gnupg/
+    .zshenv
+    .curlrc
+    .gitconfig
+)
+
+for i in "${dots[@]}"; do
+    if [ ! -e "${i}" ]; then
+        echo "Linking ${i}..."
+        ln -sfv "$HOME/$DOTFILES/${i}" ~
+    else
+        echo "✔ ${i} already linked."
+    fi
+done
+wait

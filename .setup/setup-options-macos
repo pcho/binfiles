@@ -1,0 +1,97 @@
+#!/usr/bin/env bash
+
+osascript -e 'Tell application "System Preferences" to quit'
+
+echo "Setup hostname:"
+echo
+read -r COMPUTER_NAME
+sudo scutil --set ComputerName "$COMPUTER_NAME"
+sudo scutil --set HostName "$COMPUTER_NAME"
+sudo scutil --set LocalHostName "$COMPUTER_NAME"
+sudo defaults write /Library/Preferences/SystemConfiguration/com.apple.smb.server NetBIOSName -string "$COMPUTER_NAME"
+echo "✔ Done"
+
+echo "Setting up Firewall"
+sudo /usr/libexec/ApplicationFirewall/socketfilterfw --setglobalstate on
+sudo /usr/libexec/ApplicationFirewall/socketfilterfw --setloggingmode on
+sudo /usr/libexec/ApplicationFirewall/socketfilterfw --setstealthmode on
+sudo /usr/libexec/ApplicationFirewall/socketfilterfw --setallowsigned off
+sudo /usr/libexec/ApplicationFirewall/socketfilterfw --setallowsignedapp off
+sudo pkill -HUP socketfilterfw
+echo "✔ Done"
+
+# Cloudflare 1.1.1.1 and 1.0.0.1
+# Google 8.8.8.8 and 8.8.4.4
+echo "Setting DNS to Cloudflare"
+sudo networksetup -setdnsservers "Wi-Fi" 1.1.1.1 1.0.0.1
+echo "✔ Done"
+
+echo "Disabling Bluetooth and Infrared"
+sudo defaults write /Library/Preferences/com.apple.driver.AppleIRController DeviceEnabled -int 0
+sudo defaults write /Library/Preferences/com.apple.Bluetooth ControllerPowerState -int 0 && sudo killall -HUP blued
+echo "✔ Done"
+
+echo "Setting macOS Options"
+defaults write NSGlobalDomain AppleShowScrollBars -string "WhenScrolling"
+defaults write NSGlobalDomain AppleKeyboardUIMode -int 3
+defaults write NSGlobalDomain ApplePressAndHoldEnabled -bool false
+defaults write NSGlobalDomain KeyRepeat -int 1
+defaults write NSGlobalDomain InitialKeyRepeat -int 10
+defaults write NSGlobalDomain NSAutomaticSpellingCorrectionEnabled -bool false
+defaults write NSGlobalDomain com.apple.trackpad.scaling -float 3
+defaults write NSGlobalDomain RetriesUntilHint -int 0
+defaults write com.apple.finder FXDefaultSearchScope -string "SCcf"
+defaults write com.apple.finder FXPreferredViewStyle -string "Nlsv"
+defaults write com.apple.finder WarnOnEmptyTrash -bool false
+defaults write com.apple.finder ShowStatusBar -bool true
+defaults write com.apple.dock tilesize -int 28
+defaults write com.apple.dock orientation -string "left"
+defaults write com.apple.dock persistent-apps -array
+defaults write com.apple.dock magnification -bool true
+defaults write com.apple.dock largesize -int 85
+defaults write com.apple.TextEdit RichText -int 0
+defaults write com.apple.Safari AutoFillFromAddressBook -bool false
+defaults write com.apple.Safari AutoFillCreditCardData -bool false
+defaults write com.apple.Safari AutoFillMiscellaneousForms -bool false
+defaults write com.apple.Safari WebKitPluginsEnabled -bool false
+defaults write com.apple.Safari com.apple.Safari.ContentPageGroupIdentifier.WebKit2PluginsEnabled -bool false
+defaults write com.apple.Safari WebKitJavaEnabled -bool false
+defaults write com.apple.Safari com.apple.Safari.ContentPageGroupIdentifier.WebKit2JavaEnabled -bool false
+defaults write com.apple.Safari com.apple.Safari.ContentPageGroupIdentifier.WebKit2WebGLEnabled -bool false
+defaults write com.apple.Safari AutoOpenSafeDownloads -bool false
+defaults write com.apple.Safari UniversalSearchEnabled -bool false
+defaults write com.apple.Safari ShowFullURLInSmartSearchField -bool true
+defaults write com.apple.Safari AlwaysRestoreSessionAtLaunch -bool false
+defaults write com.apple.Safari HomePage -string ""
+defaults write com.apple.Safari SuppressSearchSuggestions -bool false
+defaults write com.apple.Safari ShowFavoritesUnderSmartSearchField -bool false
+defaults write com.apple.Safari WebsiteSpecificSearchEnabled -bool false
+defaults write com.apple.Safari PreloadTopHit -int 0
+defaults write com.apple.Safari UniversalSearchEnabled -bool false
+defaults write com.apple.Safari IncludeDevelopMenu -bool true
+defaults write com.apple.Safari AlwaysShowTabBarInFullScreen -int 0
+defaults write com.apple.Safari WebAutomaticSpellingCorrectionEnabled -bool false
+defaults write com.apple.Safari WebKitDeveloperExtrasEnabledPreferenceKey -bool true
+defaults write com.apple.Safari com.apple.Safari.ContentPageGroupIdentifier.WebKit2DeveloperExtrasEnabled -bool true
+defaults write com.apple.Safari OpenPrivateWindowWhenNotRestoringSessionAtLaunch -bool true
+defaults write com.apple.Safari DownloadsClearingPolicy -int 2
+defaults write com.apple.Safari SafariGeolocationPermissionPolicy -int 0
+defaults write com.apple.Safari ExtensionsEnabled -bool false
+defaults write com.apple.Safari SendDoNotTrackHTTPHeader -bool true
+defaults write com.apple.Safari NewTabBehavior -int 1
+defaults write com.apple.Safari NewWindowBehavior -int 1
+defaults write com.apple.Safari HistoryAgeInDaysLimit -int 1
+defaults write com.apple.terminal SecureKeyboardEntry -bool true
+defaults write com.apple.ActivityMonitor ShowCategory -int 1
+defaults write com.apple.systempreferences NSQuitAlwaysKeepsWindows -bool false
+defaults write com.apple.AppleMultitouchTrackpad ActuationStrength -int 0
+defaults write com.apple.AppleMultitouchTrackpad FirstClickThreshold -int 2
+defaults write com.apple.AppleMultitouchTrackpad SecondClickThreshold -int 2
+defaults write com.apple.airplay showInMenuBarIfPresent -bool false
+defaults write com.apple.notificationcenterui bannerTime 1
+defaults write com.apple.messageshelper.AlertsController PlaySoundsKey -bool false
+defaults -currentHost write com.apple.screensaver idleTime -int 0
+defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad Clicking -bool true
+defaults -currentHost write NSGlobalDomain com.apple.mouse.tapBehavior -int 1
+defaults write NSGlobalDomain com.apple.mouse.tapBehavior -int 1
+echo "✔ Done"

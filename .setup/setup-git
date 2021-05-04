@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+# Copy SSH keys
+if [[ -f /home/ubuntu/.dotfiles/.ssh/git* ]]; then
+    echo "Dropping, key exist"
+else
+    cp $HOME/.dotfiles/.ssh/git $HOME/.ssh/
+    cp $HOME/.dotfiles/.ssh/git.pub $HOME/.ssh/
+    sudo chmod 0700 $HOME/.dotfiles/.ssh/git
+    sudo chmod 0700 $HOME/.dotfiles/.ssh/git.pub
+fi
+
+# Add to SSH-Agent
+eval $(ssh-agent -s) ssh-add ~/.ssh/git

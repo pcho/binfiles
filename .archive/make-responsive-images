@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+
+breakpoints=(
+	160
+	260
+	396
+	534
+	670
+	868
+	1076
+	1265
+	1435
+)
+
+for i in "${breakpoints[@]}"; do
+	if [[ -d ./$i ]]; then
+		echo "Directories exist. Aborting!"
+	else
+		mkdir -p $i
+	fi
+done
+
+for i in *{jpg,jpeg,png}; do
+	convert $i -resize 160 ./160/160-$i &&
+		convert $i -resize 260 ./260/260-$i &&
+		convert $i -resize 396 ./396/396-$i &&
+		convert $i -resize 534 ./534/534-$i &&
+		convert $i -resize 670 ./670/670-$i &&
+		convert $i -resize 868 ./868/868-$i &&
+		convert $i -resize 1076 ./1076/1076-$i &&
+		convert $i -resize 1265 ./1265/1265-$i &&
+		convert $i -resize 1435 ./1435/1435-$i
+done

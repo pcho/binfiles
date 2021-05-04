@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+for run in {1..40}; do wget 'https://source.unsplash.com/random/1586x396' && sleep $((($RANDOM % 10) + 5))s && echo "Downloaded"; done
+
+for f in *; do mv "$f" "$f.jpg"; done

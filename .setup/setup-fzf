@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+if [[ -d "$HOME/.fzf" ]]; then
+	update-fzf
+else
+	git clone --depth 1 https://github.com/junegunn/fzf.git $HOME/.fzf
+	$HOME/.fzf/install
+fi

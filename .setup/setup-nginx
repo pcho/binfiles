@@ -1,0 +1,90 @@
+#!/usr/bin/env bash
+
+mkdir .dep
+DEP="$HOME/.dep"
+VERSION="nginx-1.18.0"
+
+# Install brotli compression
+if [[ -d $DEP/ngx_brotli ]]; then
+	echo "Brotli already installed."
+else
+	git clone --depth 1 https://github.com/google/ngx_brotli.git $DEP/ngx_brotli
+	cd $DEP/ngx_brotli && git submodule update --init && cd
+fi
+
+# Configure and install NGINX
+cd $DEP
+wget http://nginx.org/download/$VERSION.tar.gz
+tar -zxvf $VERSION.tar.gz
+cd $VERSION
+./configure \
+	--prefix=/etc/nginx \
+	--sbin-path=/usr/sbin/nginx \
+	--modules-path=/usr/lib/nginx/modules \
+	--conf-path=/etc/nginx/nginx.conf \
+	--error-log-path=/var/log/nginx/error.log \
+	--http-log-path=/var/log/nginx/access.log \
+	--pid-path=/var/run/nginx.pid \
+	--lock-path=/var/run/nginx.lock \
+	--http-client-body-temp-path=/var/cache/nginx/client_temp \
+	--http-proxy-temp-path=/var/cache/nginx/proxy_temp \
+	--http-fastcgi-temp-path=/var/cache/nginx/fastcgi_temp \
+	--http-uwsgi-temp-path=/var/cache/nginx/uwsgi_temp \
+	--http-scgi-temp-path=/var/cache/nginx/scgi_temp \
+	--user=nginx \
+	--group=nginx \
+	--with-http_ssl_module \
+	--with-pcre-jit \
+	--with-threads \
+	--with-http_ssl_module \
+	--with-http_realip_module \
+	--with-http_addition_module \
+	--with-http_sub_module \
+	--with-http_dav_module \
+	--with-http_flv_module \
+	--with-http_mp4_module \
+	--with-http_geoip_module \
+	--with-http_image_filter_module \
+	--with-http_v2_module \
+	--with-http_xslt_module \
+	--with-http_gunzip_module \
+	--with-http_gzip_static_module \
+	--with-http_random_index_module \
+	--with-http_secure_link_module \
+	--with-http_stub_status_module \
+	--with-http_auth_request_module \
+	--with-threads \
+	--with-stream \
+	--with-stream_ssl_module \
+	--with-http_slice_module \
+	--with-mail \
+	--with-mail_ssl_module \
+	--with-file-aio \
+	--with-ipv6 \
+	--add-module=/home/ubuntu/.dep/ngx_brotli
+make
+sudo make install
+cd
+
+# Remove NGINX sources
+rm -rf $DEP/$VERSION
+rm -rf $DEP/$VERSION.tar.gz
+
+# Copy nginx.service
+sudo cp $HOME/.dotfiles/.config/nginx.service /lib/systemd/system/
+
+# Create 'nginx' user
+sudo useradd --no-create-home nginx
+
+# Create cache and web directories
+sudo mkdir -p /var/cache/nginx/client_temp
+sudo mkdir /etc/nginx/conf.d/
+sudo mkdir /var/www/
+sudo chown nginx:nginx /var/www/
+
+# Enable and auto start
+sudo systemctl enable nginx
+sudo systemctl start nginx
+
+# Generate dhparam cert
+screen -d -m sudo openssl dhparam -out /etc/ssl/certs/dhparam.pem 4096

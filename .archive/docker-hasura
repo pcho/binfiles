@@ -1,0 +1,7 @@
+#! /bin/bash
+
+docker run --name="hasura" -d -p 8080:8080 \
+	-e HASURA_GRAPHQL_DATABASE_URL=postgres://hasurauser:hasurauser@host.docker.internal:5432/hasura \
+	-e HASURA_GRAPHQL_ENABLE_TELEMETRY=false \
+	-e HASURA_GRAPHQL_ENABLE_CONSOLE=true \
+	hasura/graphql-engine:latest

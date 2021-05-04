@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+# Install mosh
+sudo apt-get -y install mosh
+
+# Open ports for connection
+sudo ufw allow 60000:61000/udp

@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+if [ -n "$1" ]; then
+	curl -X POST -s --data-urlencode "input@$1" https://cssminifier.com/raw >style.min.css
+else
+	echo "No input file specified."
+fi

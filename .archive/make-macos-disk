@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+echo "Create MacOS USB Install Disk? (y/n)"
+read -r response
+if [[ $response =~ ^([yY][eE][sS]|[yY])$ ]]; then
+
+	echo "Enter System Name"
+	read SYSTEM_NAME
+
+	echo "Enter Volume Name"
+	read VOLUME_NAME
+
+	sudo /Applications/Install\ macOS\ $SYSTEM_NAME.app/Contents/Resources/createinstallmedia –-volume /Volumes/$VOLUME_NAME --nointeraction && echo "$SYSTEM_NAME Created"
+
+fi

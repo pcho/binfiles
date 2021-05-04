@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+
+sudo curl -o /etc/hosts https://raw.githubusercontent.com/StevenBlack/hosts/master/alternates/fakenews-gambling-porn-social/hosts
+
+# ✓ Custom {{{
+
+echo '
+0.0.0.0 gazeta.pl
+0.0.0.0 www.gazeta.pl
+0.0.0.0 wykop.pl
+0.0.0.0 www.wykop.pl
+0.0.0.0 jasonhunt.pl
+0.0.0.0 sport.pl
+0.0.0.0 forum-kredytowe.pl
+0.0.0.0 www.forum-kredytowe.pl
+0.0.0.0 www.sport.pl' | sudo tee -a /etc/hosts
+
+# }}}
+
+echo "✔ Done!"

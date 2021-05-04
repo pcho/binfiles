@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+# Change default user password
+sudo passwd ubuntu

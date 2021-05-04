@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+VERSION="2.4.0-beta.2"
+
+wget https://github.com/caddyserver/caddy/releases/download/v"$VERSION"/caddy_"$VERSION"_linux_amd64.tar.gz
+sudo tar -C /usr/local/bin -xzf caddy_"$VERSION"_linux_amd64.tar.gz
+rm -rfi caddy_"$VERSION"_linux_amd64.tar.gz

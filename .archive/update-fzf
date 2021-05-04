@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+if [[ -d "$HOME/.fzf" ]]; then
+	cd $HOME/.fzf
+	if [ $(git status --porcelain | wc -l) -gt 0 ]; then
+		git pull && ./install
+	else
+		echo "✔ You have the newest fzf version"
+	fi
+fi

@@ -1,0 +1,98 @@
+#!/usr/bin/env bash
+
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
+
+brew tap dbcli/tap
+brew tap homebrew/cask
+brew tap beeftornado/rmtree
+brew tap homebrew/cask-versions
+brew tap alecthomas/homebrew-tap
+
+pkg=(
+    # fd
+    git
+    # gpg
+    wget
+    node
+    ncdu
+    yarn
+    # grep
+    shfmt
+    python
+    gnu-sed
+    # postgres
+
+    go
+    # jq
+    bat
+    # ack
+    # mpv
+    hugo
+    # grip
+    htop
+    # make
+    # gawk
+    # curl
+    # less
+    # mutt
+    # tmux
+    # buku
+    # cmus
+    # task
+    pgrep
+    # cmake
+    # ctags
+    # tokei
+    # hexyl
+    # rbenv
+    # lynis
+    # links
+    irssi
+    # zopfli
+    # stubby
+    # pandoc
+    # ranger
+    # ansible
+    # litecli
+    # testssl
+    # httpstat
+    # rkhunter
+    # newsboat
+    # mercurial
+    # coreutils
+    # findutils
+    # chkrootkit
+    # youtube-dl
+    # mps-youtube
+    # offlineimap
+    # imagemagick
+    # ssllabs-scan
+    # speedtest-cli
+)
+
+for i in "${pkg[@]}"; do
+    brew install "${i}"
+done
+wait
+
+cask=(
+    paw
+    iina
+    authy
+    figma
+    telegram
+    oversight
+    iterm2-nightly
+    safari-technology-preview
+    firefox-developer-edition
+
+    # dash
+    # docker
+    # postman
+    # chromium
+)
+
+for i in "${cask[@]}"; do
+    brew cask install "${i}"
+done
+wait

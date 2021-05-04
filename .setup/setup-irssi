@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+
+VERSION=1.2.2
+
+curl -O https://github.com/irssi/irssi/releases/download/$VERSION/irssi-$VERSION.tar.gz
+tar -xzf irssi-$VERSION.tar.gz
+cd irssi-$VERSION || return
+
+./configure \
+	--with-otr=yes \
+	--with-perl=yes \
+	--with-bot \
+	--with-proxy \
+	--enable-true-color
+
+make
+sudo make install
+# cd .. && rm -rfv irssi-$VERSION

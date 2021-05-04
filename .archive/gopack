@@ -1,0 +1,44 @@
+#!/usr/bin/env bash
+
+go get -v -u golang.org/x/crypto
+go get -v -u golang.org/x/image
+go get -v -u golang.org/x/net
+go get -v -u golang.org/x/sys
+go get -v -u golang.org/x/text
+go get -v -u golang.org/x/tools
+
+go get -v -u github.com/gorilla/mux
+go get -v -u github.com/gorilla/context
+go get -v -u github.com/gorilla/reverse
+go get -v -u github.com/gorilla/rpc
+go get -v -u github.com/gorilla/securecookie
+go get -v -u github.com/gorilla/sessions
+go get -v -u github.com/gorilla/websocket
+
+# go get -v -u golang.org/x/tools/cmd/gopls
+# go get -v -u github.com/klauspost/asmfmt/cmd/asmfmt
+# go get -v -u github.com/derekparker/delve/cmd/dlv
+# go get -v -u github.com/kisielk/errcheck
+# go get -v -u github.com/davidrjenni/reftools/cmd/fillstruct
+# go get -v -u github.com/mdempsky/gocode
+# go get -v -u github.com/stamblerre/gocode
+# go get -v -u github.com/rogpeppe/godef
+# go get -v -u github.com/zmb3/gogetdoc
+# go get -v -u github.com/alecthomas/gometalinter
+# go get -v -u golang.org/x/tools/cmd/goimports
+# go get -v -u golang.org/x/lint/golint
+# go get -v -u github.com/fatih/gomodifytags
+# go get -v -u golang.org/x/tools/cmd/gorename
+# go get -v -u github.com/jstemmer/gotags
+# go get -v -u golang.org/x/tools/cmd/guru
+# go get -v -u github.com/josharian/impl
+# go get -v -u honnef.co/go/tools/cmd/keyify
+# go get -v -u github.com/fatih/motion
+# go get -v -u github.com/koron/iferr
+# go get -v -u github.com/golangci/golangci-lint/cmd/golangci-lint
+# go get -v -u github.com/mmcdole/gofeed
+# go get -v -u github.com/jinzhu/gorm
+# go get -v -u github.com/stripe/stripe-go
+# go get -v -u github.com/Sirupsen/logrus
+# go get -v -u github.com/volatiletech/authboss
+# go get -v -u github.com/xyproto/algernon

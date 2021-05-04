@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+while read -r CIDR_RECORD; do
+	dig @8.8.8.8 \
+		+short TXT "$CIDR_RECORD" |
+		ggrep -Pow '(\d+\.){3}\d+\/\d+'
+done < <(
+	dig @8.8.8.8 \
+		+short TXT _cloud-netblocks.googleusercontent.com |
+		ggrep -Pow '\_cloud.[^\ ]*.com'
+)

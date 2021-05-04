@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+sudo mv $HOME/ssh_host_key $HOME/ssh_host_key.pub /etc/ssh/
+sudo chown root:root /etc/ssh/ssh_host_key /etc/ssh/ssh_host_key.pub
+sudo chmod 0600 /etc/ssh/ssh_host_key
+sudo cp ~/.dotfiles/.config/sshd_config /etc/ssh/
+
+sudo service ssh restart
+
+ssh-keygen -E sha256 -lf /etc/ssh/ssh_host_key.pub

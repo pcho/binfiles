@@ -1,0 +1,108 @@
+#!/usr/bin/env bash
+
+PASSWORD=$(openssl rand -base64 32)
+DIR="$HOME/.ssh/"
+
+help() {
+    cat <<EOT
+
+  Usage: $(basename "$0") [option]
+
+  Options:
+    git:        Create key for GitHub or GitLab
+    vps:        Create key for VPS
+    host:       Create passwordless host key
+    change:     Change ssh key password
+
+EOT
+}
+
+name() {
+    echo "Enter Key name:"
+    read -r KEY_NAME
+}
+
+email() {
+    echo "Associated email:"
+    read -r E_MAIL
+}
+
+copy() {
+    echo ""
+    echo "Copy this password as it's only displayed once."
+    echo $PASSWORD
+    echo ""
+
+}
+
+git() {
+    name
+    email
+    copy
+    ssh-keygen -t rsa \
+        -b 4096 \
+        -c "$e_mail" \
+        -f "$dir/$key_name" \
+        -c '' \
+        -n "$password"
+    ssh-add $dir/"$key_name"
+}
+
+git_passless() {
+    ssh-keygen -t rsa \
+        -b 4096 \
+        -f git_upload_key \
+        -C '' \
+        -N ''
+}
+
+vps() {
+    name
+    copy
+    ssh-keygen -t rsa \
+        -b 4096 \
+        -f "$DIR/$KEY_NAME" \
+        -C '' \
+        -N "$PASSWORD"
+    ssh-add $DIR/"$KEY_NAME"
+}
+
+host() {
+    ssh-keygen -t rsa \
+        -b 4096 \
+        -f ssh_host_key \
+        -C '' \
+        -N ''
+}
+
+keys() {
+    local LIST=$(gfind $DIR -maxdepth 1 -name '*' -printf "%f\n" | sort | fzf)
+    echo $LIST
+}
+
+change() {
+    echo "Change SSH key password."
+    echo ""
+    sudo ssh-keygen -p -f $DIR/$(keys)
+}
+
+case $1 in
+"git")
+    git
+    ;;
+"vps")
+    vps
+    ;;
+"host")
+    host
+    ;;
+"git_passless")
+    git_passless
+    ;;
+"change")
+    change
+    ;;
+*)
+    help
+    ;;
+esac

@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+sudp apt-get install -y \
+         libglapi-mesa-dev \
+         libxdamage-dev \
+         libxcb-glx0 \
+         libxcb-dri2-0 \
+         libxcb-dri3-0 \
+         libxcb-present-dev \
+         libxshmfence-dev \
+         libxxf86vm-dev
+
+cd ~ && wget -O - "https://www.dropbox.com/download?plat=lnx.x86_64" | tar xzf -
+cd ~/.dropbox-dist
+sudo ./dropboxd

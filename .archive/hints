@@ -1,0 +1,57 @@
+#!/usr/bin/env bash
+
+# Simplified version of https://github.com/miki725/hint
+
+DIR=$HOME/.hints
+
+clone_if_none() {
+    if [ ! -d "$DIR" ]; then
+        git clone --depth=1 https://github.com/rstacruz/cheatsheets.git $DIR
+    fi
+}
+
+update() {
+    cd $DIR
+    git pull
+}
+
+path() {
+    if [[ -n $1 ]]; then
+        echo $DIR/$1.md
+    fi
+}
+
+hint() {
+    local choice=$(find $DIR -maxdepth 1 -name '*.md' -printf "%f\n" | sed 's/\.md$//g' | sort)
+    echo $(path $choice)
+}
+
+open() {
+    if [[ -z $1 ]]; then
+        return
+    elif [[ ! -f $1 ]]; then
+        echo >&2 "$2 does not exist. Perhaps try to update hints with hint --update"
+        exit 1
+    else
+        less $1
+    fi
+}
+
+main() {
+    clone_if_none
+
+    if [[ -n $1 ]]; then
+        case $1 in
+        "--update")
+            update
+            ;;
+        *)
+            open $(path $1) $1
+            ;;
+        esac
+    else
+        open $(hint)
+    fi
+}
+
+main $@
