@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-VERSION="1.16.0"
+VERSION="1.16.3"
 
 wget https://golang.org/dl/go$VERSION.linux-amd64.tar.gz
 sudo tar -C /usr/local -xzf go$VERSION.linux-amd64.tar.gz
