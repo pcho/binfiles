@@ -4,4 +4,9 @@ VERSION="1.16.4"
 
 wget https://golang.org/dl/go$VERSION.linux-amd64.tar.gz
 tar -C /usr/local -xzf go$VERSION.linux-amd64.tar.gz
-rm -rfi go$VERSION.linux-amd64.tar.gz
+
+if [ -f /.dockerenv ]; then
+    rm -rfi go$VERSION.linux-amd64.tar.gz
+else
+    sudo rm -rfi go$VERSION.linux-amd64.tar.gz
+fi
