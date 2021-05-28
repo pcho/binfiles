@@ -18,6 +18,8 @@ apt-get update && apt-get upgrade && apt-get install -y \
     wget \
     dialog \
     autogen \
+    tzdata \
+    man-db \
     bison \
     autoconf \
     libtool \
@@ -25,3 +27,6 @@ apt-get update && apt-get upgrade && apt-get install -y \
 
 # Change default shell to ZSH for user and root
 chsh -s /usr/bin/zsh
+
+dpkg-reconfigure tzdata
+dpkg-reconfigure locales
