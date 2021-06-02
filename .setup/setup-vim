@@ -6,5 +6,10 @@ cd $HOME/vim || return
 	--with-features=huge \
 	--enable-multibyte \
 	make
-sudo make install
-cd && sudo rm -rfv $HOME/vim
+if [ -f /.dockerenv ]; then
+    make install
+    cd && rm -rfv $HOME/vim
+else
+    sudo make install
+    cd && sudo rm -rfv $HOME/vim
+fi
