@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+git clone --depth=1 https://github.com/tmux/tmux.git $HOME/tmux
+cd $HOME/tmux || return
+sh autogen.sh
+./configure
+make
+sudo make install
+cd ..
+rm -rf $HOME/tmux

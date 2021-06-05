@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+git clone --depth=1 https://github.com/thewtex/tmux-mem-cpu-load $HOME/tmcl
+cd $HOME/tmcl || return
+cmake .
+make
+sudo make install
+cd ..
+rm -rf $HOME/tmcl
