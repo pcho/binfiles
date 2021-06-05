@@ -17,14 +17,16 @@ sudo apt-get update && sudo apt-get upgrade && sudo apt-get install -y \
     libxslt-dev \
     libgeoip-dev \
     libssl-dev \
-    libncurses5-dev \
+    ncurses-dev \
+    libevent-dev \
     libpcre++-dev \
     zsh \
     git \
     autogen \
     autoconf \
     libtool \
-    fail2ban
+    bison
+    # fail2ban
 
 # Change default shell to ZSH for user and root
 chsh -s /usr/bin/zsh
@@ -34,6 +36,9 @@ sudo chsh -s /usr/bin/zsh
 sudo ufw allow ssh
 sudo ufw enable
 
+# Change Date & Time
+sudo dpkg-reconfigure tzdata
+
 # Config fail2ban
-sudo cp /home/ubuntu/.dotfiles/.config/jail.local /etc/fail2ban/
-sudo systemctl restart fail2ban
+# sudo cp /home/ubuntu/.dotfiles/.config/jail.local /etc/fail2ban/
+# sudo systemctl restart fail2ban
