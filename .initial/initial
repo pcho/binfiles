@@ -26,6 +26,7 @@ sudo apt-get update && sudo apt-get upgrade && sudo apt-get install -y \
     libtool \
     bison \
     cmake \
+    apt-transport-https \
     silversearcher-ag
 
 # Change default shell to ZSH for user and root

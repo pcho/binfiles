@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+wget https://github.com/cli/cli/releases/download/v1.11.0/gh_1.11.0_linux_amd64.deb
+sudo dpkg -i gh_1.11.0_linux_amd64.deb
+rm -rf gh_1.11.0_linux_amd64.deb
+
+gh auth login
