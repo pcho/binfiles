@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+# Update all packages and install fail2ban
+sudo apt-get update && sudo apt-get upgrade && sudo apt-get install -y \
+    fail2ban
+
+# Config fail2ban
+sudo cp /home/ubuntu/.dotfiles/.config/jail.local /etc/fail2ban/
+sudo systemctl restart fail2ban
