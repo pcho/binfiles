@@ -3,5 +3,9 @@
 VERSION="2.4.1"
 
 wget https://github.com/caddyserver/caddy/releases/download/v"$VERSION"/caddy_"$VERSION"_linux_amd64.tar.gz
-sudo tar -C /usr/local/bin -xzf caddy_"$VERSION"_linux_amd64.tar.gz
+if [ -f /.dockerenv ]; then
+    tar -C /usr/local/bin -xzf caddy_"$VERSION"_linux_amd64.tar.gz
+else
+    sudo tar -C /usr/local/bin -xzf caddy_"$VERSION"_linux_amd64.tar.gz
+fi
 rm -rfi caddy_"$VERSION"_linux_amd64.tar.gz
