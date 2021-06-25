@@ -8,9 +8,9 @@ ln -sfv $HOME/.dotfiles/.zshenv ~
 ln -sfv $HOME/.dotfiles/.curlrc ~
 ln -sfv $HOME/.dotfiles/.tmux.conf ~
 ln -sfv $HOME/.dotfiles/.gitconfig ~
+ln -sfv $HOME/.dotfiles/.dircolors ~
 
 # Make some dirs
-mkdir $HOME/.sync
 mkdir $HOME/.vim/undo
 mkdir $HOME/.dev
 
