@@ -1,10 +1,17 @@
 #!/usr/bin/env bash
 
 # Install mosh
-git clone https://github.com/mobile-shell/mosh && cd mosh && gh pr checkout 1104 && ./autogen.sh && ./configure && make && sudo make install
+git clone --depth=1 https://github.com/mobile-shell/mosh $HOME/mosh
+cd $HOME/mosh
+# gh pr checkout 1104
+./autogen.sh
+./configure
+make
+sudo make install
+cd $HOME
 
 # Open ports for connection
 sudo ufw allow 60000:61000/udp
 
 # Remove mosh folder
-rm -rf mosh/
+rm -rf $HOME/mosh
