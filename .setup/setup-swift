@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+
+SYSTEM="ubuntu2004"
+BRANCH="swift-5.5-branch"
+SNAP="swift-5.5-DEVELOPMENT-SNAPSHOT-2021-06-26-a"
+VERSION="swift-5.5-DEVELOPMENT-SNAPSHOT-2021-06-26-a-ubuntu20.04"
+
+wget https://swift.org/builds/$BRANCH/$SYSTEM/$SNAP/$VERSION.tar.gz
+
+if [ -f /.dockerenv ]; then
+    tar -C /usr/local -xzf $VERSION.tar.gz
+    rm -rfi $VERSION.tar.gz
+else
+    sudo tar -C /usr/local -xzf $VERSION.tar.gz
+    sudo rm -rfi $VERSION.tar.gz
+fi

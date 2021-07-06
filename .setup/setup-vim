@@ -3,9 +3,10 @@
 git clone --depth=1 https://github.com/vim/vim.git $HOME/vim
 cd $HOME/vim || return
 ./configure \
-	--with-features=huge \
-	--enable-multibyte \
-	make
+    --with-features=huge \
+    --enable-multibyte \
+    --enable-python3interp=yes
+make
 if [ -f /.dockerenv ]; then
     make install
     cd && rm -rfv $HOME/vim
