@@ -1,16 +1,20 @@
 #!/usr/bin/env bash
 
+DATE="2021-07-28-a"
 SYSTEM="ubuntu2004"
+VERSION="ubuntu20.04"
 BRANCH="swift-5.5-branch"
-SNAP="swift-5.5-DEVELOPMENT-SNAPSHOT-2021-06-26-a"
-VERSION="swift-5.5-DEVELOPMENT-SNAPSHOT-2021-06-26-a-ubuntu20.04"
+SNAP="swift-5.5-DEVELOPMENT-SNAPSHOT-"
+PKG=$SNAP$DATE-$VERSION
 
-wget https://swift.org/builds/$BRANCH/$SYSTEM/$SNAP/$VERSION.tar.gz
+wget https://swift.org/builds/$BRANCH/$SYSTEM/$SNAP$DATE/$PKG.tar.gz
 
 if [ -f /.dockerenv ]; then
-    tar -C /usr/local -xzf $VERSION.tar.gz
-    rm -rfi $VERSION.tar.gz
+    tar -C "$HOME/" -xzf "$PKG.tar.gz"
+    rm -rfi "$PKG.tar.gz"
 else
-    sudo tar -C /usr/local -xzf $VERSION.tar.gz
-    sudo rm -rfi $VERSION.tar.gz
+    sudo tar -C "$HOME/.swift" -xzf "$PKG.tar.gz"
+    sudo rm -rfi "$PKG.tar.gz"
 fi
+
+mv "$HOME/$PKG" "$HOME/.swift"
