@@ -1,7 +1,0 @@
-#!/usr/bin/env bash
-
-# Remove bash files
-rm -rf $HOME/.bashrc
-rm -rf $HOME/.bash_history
-rm -rf $HOME/.bash_logout
-rm -rf $HOME/.profile
