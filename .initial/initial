@@ -32,6 +32,11 @@ sudo apt-get update && sudo apt-get upgrade && sudo apt-get install -y \
     ncurses-dev \
     libevent-dev \
     libpcre++-dev \
+    python3-pip \
+    python3-venv \
+    ncdu \
+    htop \
+    fd-find \
     zsh \
     git \
     autogen \
@@ -50,16 +55,12 @@ sudo apt-get update && sudo apt-get upgrade && sudo apt-get install -y \
 chsh -s /usr/bin/zsh
 sudo chsh -s /usr/bin/zsh
 
-# Allow SSH
-sudo ufw allow ssh
-sudo ufw enable
-
 # Sets Timezone to EU/Berlin
 export TZ='Europe/Berlin'
 ln -snf /usr/share/zoneinfo/"$TZ" /etc/localtime && sudo dpkg-reconfigure tzdata
 
 # Create host key
-cd $HOME
+cd "$HOME" || return
 ssh-keygen -t rsa \
     -b 4096 \
     -f ssh_host_key \
@@ -67,7 +68,7 @@ ssh-keygen -t rsa \
     -N ''
 
 # Configure SSH
-sudo mv $HOME/ssh_host_key $HOME/ssh_host_key.pub /etc/ssh/
+sudo mv "$HOME"/ssh_host_key "$HOME"/ssh_host_key.pub /etc/ssh/
 sudo chown root:root /etc/ssh/ssh_host_key /etc/ssh/ssh_host_key.pub
 sudo chmod 0600 /etc/ssh/ssh_host_key
 sudo cp ~/.dotfiles/.config/sshd_config /etc/ssh/
@@ -76,33 +77,50 @@ sudo service ssh restart
 
 ssh-keygen -E sha256 -lf /etc/ssh/ssh_host_key.pub
 
+# Build mosh from source
+git clone --depth=1 https://github.com/mobile-shell/mosh "$HOME"/mosh
+cd "$HOME"/mosh || return
+sh autogen.sh
+./configure
+make
+sudo make install
+cd "$HOME" || return
+rm -rf "$HOME"/mosh
+
+# Open ports
+sudo ufw allow ssh
+sudo ufw allow http
+sudo ufw allow https
+sudo ufw allow mosh
+sudo ufw enable
+
 # Install fzf
-git clone --depth 1 https://github.com/junegunn/fzf.git $HOME/.fzf
-$HOME/.fzf/install
+git clone --depth 1 https://github.com/junegunn/fzf.git "$HOME"/.fzf
+"$HOME"/.fzf/install
 
 # Build TMUX from source
-git clone --depth=1 https://github.com/tmux/tmux.git $HOME/tmux
-cd $HOME/tmux || return
+git clone --depth=1 https://github.com/tmux/tmux.git "$HOME"/tmux
+cd "$HOME"/tmux || return
 sh autogen.sh
 ./configure
 make
 sudo make install
 cd ..
-rm -rf $HOME/tmux
+rm -rf "$HOME"/tmux
 
 # Build VIM from source
-git clone --depth=1 https://github.com/vim/vim.git $HOME/vim
-cd $HOME/vim || return
+git clone --depth=1 https://github.com/vim/vim.git "$HOME"/vim
+cd "$HOME"/vim || return
 ./configure \
     --with-features=huge \
     --enable-multibyte \
     --enable-python3interp=yes
     make
 sudo make install
-cd && sudo rm -rfv $HOME/vim
+cd && sudo rm -rfv "$HOME"/vim
 
 # Cleanup bash files
-rm -rf $HOME/.bashrc
-rm -rf $HOME/.bash_history
-rm -rf $HOME/.bash_logout
-rm -rf $HOME/.profile
+rm -rf "$HOME"/.bashrc
+rm -rf "$HOME"/.bash_history
+rm -rf "$HOME"/.bash_logout
+rm -rf "$HOME"/.profile
