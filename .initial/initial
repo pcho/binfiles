@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-export DEBIAN_FRONTEND="noninteractive"
-
 # Add password to default user
 sudo passwd ubuntu
 
@@ -39,6 +37,7 @@ sudo apt-get update && sudo apt-get upgrade && sudo apt-get install -y \
     fd-find \
     zsh \
     git \
+    dialog \
     autogen \
     autoconf \
     libtool \
@@ -57,7 +56,7 @@ sudo chsh -s /usr/bin/zsh
 
 # Sets Timezone to EU/Berlin
 export TZ='Europe/Berlin'
-ln -snf /usr/share/zoneinfo/"$TZ" /etc/localtime && sudo dpkg-reconfigure tzdata
+sudo ln -snf /usr/share/zoneinfo/"$TZ" /etc/localtime && sudo dpkg-reconfigure -f noninteractive tzdata
 
 # Create host key
 cd "$HOME" || return
@@ -91,8 +90,11 @@ rm -rf "$HOME"/mosh
 sudo ufw allow ssh
 sudo ufw allow http
 sudo ufw allow https
-sudo ufw allow mosh
+sudo ufw allow 60000:61000/udp
 sudo ufw enable
+
+# Generate dhparam cert
+screen -d -m sudo openssl dhparam -out /etc/ssl/certs/dhparam.pem 4096
 
 # Install fzf
 git clone --depth 1 https://github.com/junegunn/fzf.git "$HOME"/.fzf
@@ -107,6 +109,15 @@ make
 sudo make install
 cd ..
 rm -rf "$HOME"/tmux
+
+# Build tmux-mem-cpu-load plugin for tmux
+git clone --depth=1 https://github.com/thewtex/tmux-mem-cpu-load "$HOME"/tmcl
+cd "$HOME"/tmcl || return
+cmake .
+make
+sudo make install
+cd ..
+rm -rf "$HOME"/tmcl
 
 # Build VIM from source
 git clone --depth=1 https://github.com/vim/vim.git "$HOME"/vim
