@@ -38,6 +38,7 @@ sudo apt-get update && sudo apt-get upgrade && sudo apt-get install -y \
     zsh \
     git \
     dialog \
+    unzip \
     autogen \
     autoconf \
     libtool \
