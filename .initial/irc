@@ -1,0 +1,141 @@
+#!/usr/bin/env bash
+
+# Add password to default user
+sudo passwd mnx
+
+# Link dotfiles
+ln -sfv "$HOME/.dotfiles/.vim" ~
+ln -sfv "$HOME/.dotfiles/.bin" ~
+ln -sfv "$HOME/.dotfiles/.pip" ~
+ln -sfv "$HOME/.dotfiles/.zshenv" ~
+ln -sfv "$HOME/.dotfiles/.curlrc" ~
+ln -sfv "$HOME/.dotfiles/.tmux.conf" ~
+ln -sfv "$HOME/.dotfiles/.dircolors" ~
+
+# Make some dirs
+mkdir "$HOME/.vim/undo"
+
+# Copy SSH settings
+cp "$HOME/.dotfiles/.config/ssh_config" "$HOME/.ssh"
+
+# Update all packages and install essentials
+sudo apt-get update && sudo apt-get upgrade && sudo apt-get install -y \
+    build-essential \
+    libgd-dev \
+    libxslt-dev \
+    libgeoip-dev \
+    libssl-dev \
+    ncurses-dev \
+    libevent-dev \
+    libpcre++-dev \
+    python3-pip \
+    python3-venv \
+    oidentd \
+    ncdu \
+    htop \
+    fd-find \
+    zsh \
+    git \
+    dialog \
+    unzip \
+    autogen \
+    autoconf \
+    libtool \
+    bison \
+    cmake \
+    whois \
+    protobuf-compiler \
+    apt-transport-https \
+    shellcheck \
+    silversearcher-ag
+
+# Change default shell to ZSH for user and root
+chsh -s /usr/bin/zsh
+sudo chsh -s /usr/bin/zsh
+
+# Sets Timezone to EU/Berlin
+export TZ='Europe/Berlin'
+sudo ln -snf /usr/share/zoneinfo/"$TZ" /etc/localtime && sudo dpkg-reconfigure -f noninteractive tzdata
+
+# Create host key
+cd "$HOME" || return
+ssh-keygen -t rsa \
+    -b 4096 \
+    -f ssh_host_key \
+    -C '' \
+    -N ''
+
+# Configure SSH
+sudo mv "$HOME"/ssh_host_key "$HOME"/ssh_host_key.pub /etc/ssh/
+sudo chown root:root /etc/ssh/ssh_host_key /etc/ssh/ssh_host_key.pub
+sudo chmod 0600 /etc/ssh/ssh_host_key
+sudo cp ~/.dotfiles/.config/sshd_config /etc/ssh/
+
+sudo service ssh restart
+
+ssh-keygen -E sha256 -lf /etc/ssh/ssh_host_key.pub
+
+# Build mosh from source
+git clone --depth=1 https://github.com/mobile-shell/mosh "$HOME"/mosh
+cd "$HOME"/mosh || return
+sh autogen.sh
+./configure
+make
+sudo make install
+cd "$HOME" || return
+rm -rf "$HOME"/mosh
+
+# Open ports
+sudo ufw allow ssh
+sudo ufw allow 113/tcp
+sudo ufw allow 60000:61000/udp
+sudo ufw enable
+
+# Generate dhparam cert
+screen -d -m sudo openssl dhparam -out /etc/ssl/certs/dhparam.pem 4096
+
+# Install fzf
+git clone --depth 1 https://github.com/junegunn/fzf.git "$HOME"/.fzf
+"$HOME"/.fzf/install
+
+# Build TMUX from source
+git clone --depth=1 https://github.com/tmux/tmux.git "$HOME"/tmux
+cd "$HOME"/tmux || return
+sh autogen.sh
+./configure
+make
+sudo make install
+cd ..
+rm -rf "$HOME"/tmux
+
+# Build tmux-mem-cpu-load plugin for tmux
+git clone --depth=1 https://github.com/thewtex/tmux-mem-cpu-load "$HOME"/tmcl
+cd "$HOME"/tmcl || return
+cmake .
+make
+sudo make install
+cd ..
+rm -rf "$HOME"/tmcl
+
+# Build VIM from source
+git clone --depth=1 https://github.com/vim/vim.git "$HOME"/vim
+cd "$HOME"/vim || return
+./configure \
+    --with-features=huge \
+    --enable-multibyte \
+    --enable-python3interp=yes
+    make
+sudo make install
+cd && sudo rm -rfv "$HOME"/vim
+
+# Install httpie
+python3 -m pip install --upgrade https://github.com/httpie/httpie/archive/master.tar.gz
+
+# Cleanup bash files
+rm -rf "$HOME"/.bashrc
+rm -rf "$HOME"/.bash_history
+rm -rf "$HOME"/.bash_logout
+rm -rf "$HOME"/.profile
+
+# Download WeeChat Config
+git clone --depth=1 --recursive git@github.com:pcho/weechatfiles.git .weechat
