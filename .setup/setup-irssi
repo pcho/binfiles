@@ -1,18 +1,10 @@
 #!/usr/bin/env bash
 
-VERSION=1.2.2
+VERSION=1.3.0-pre8
 
-curl -O https://github.com/irssi/irssi/releases/download/$VERSION/irssi-$VERSION.tar.gz
-tar -xzf irssi-$VERSION.tar.gz
-cd irssi-$VERSION || return
-
-./configure \
-	--with-otr=yes \
-	--with-perl=yes \
-	--with-bot \
-	--with-proxy \
-	--enable-true-color
-
-make
-sudo make install
-# cd .. && rm -rfv irssi-$VERSION
+wget https://anti.teamidiot.de/static/nei/irssi-"$VERSION".tar.xz
+tar -xzf irssi-"$VERSION".tar.xz
+cd irssi-"$VERSION" || return
+meson Build -Dwith-proxy=yes -Dwith-bot=yes -Denable-true-color=yes
+ninja -C Build
+sudo ninja -C Build install

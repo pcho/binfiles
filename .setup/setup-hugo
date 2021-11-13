@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
-wget https://github.com/gohugoio/hugo/releases/download/v0.88.1/hugo_extended_0.88.1_Linux-64bit.tar.gz
-sudo tar -C /usr/local/bin -xzf hugo_extended_0.88.1_Linux-64bit.tar.gz
-rm -rf hugo_extended_0.88.1_Linux-64bit.tar.gz
+VERSION="0.89.2"
+
+wget https://github.com/gohugoio/hugo/releases/download/v"$VERSION"/hugo_extended_"$VERSION"_Linux-64bit.tar.gz
+sudo tar -C /usr/local/bin -xzf hugo_extended_"$VERSION"_Linux-64bit.tar.gz
+rm -rf hugo_extended_"$VERSION"_Linux-64bit.tar.gz
