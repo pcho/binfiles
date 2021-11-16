@@ -16,3 +16,7 @@ mkdir "$HOME/.dev"
 
 # Copy SSH settings
 cp "$HOME/.dotfiles/.config/ssh_config" "$HOME/.ssh"
+
+# Install fzf
+git clone --depth 1 https://github.com/junegunn/fzf.git "$HOME"/.fzf
+"$HOME"/.fzf/install
