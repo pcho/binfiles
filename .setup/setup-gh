@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-VERSION="1.13.1"
+VERSION="2.2.0"
 
 wget https://github.com/cli/cli/releases/download/v"$VERSION"/gh_"$VERSION"_linux_amd64.deb
 dpkg -i gh_"$VERSION"_linux_amd64.deb

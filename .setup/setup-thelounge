@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
 
-VERSION="4.3.0-pre.6"
+VERSION="4.3.0"
 
 sudo docker run --detach --name thelounge --publish 113:9001 --publish 9000:9000 --volume ~/.thelounge:/var/opt/thelounge --restart always thelounge/thelounge:$VERSION
