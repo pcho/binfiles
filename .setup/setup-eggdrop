@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+
+VERSION="1.9.1"
+EGG="$HOME/eggdrop-$VERSION"
+
+wget https://github.com/eggheads/eggdrop/releases/download/v"$VERSION"/eggdrop-"$VERSION".tar.gz -P "$HOME"
+
+tar -C "$HOME" -zxvf "$EGG".tar.gz
+
+sudo apt update && sudo apt install -y tcl \
+    tcl-dev \
+    tcl-trf \
+    tcl-tls \
+    libsqlite3-tcl \
+    tcllib
+
+cd "$EGG" || return
+./configure
+make config
+make
+make install
+make sslcert
+cd && rm -rfv "$EGG"
