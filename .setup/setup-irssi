@@ -2,6 +2,15 @@
 
 VERSION=1.3.0-pre8
 
+sudo apt update && sudo apt install -y tcl-tls \
+    libsqlite3-tcl \
+    tcllib \
+    libperl-dev \
+    meson \
+    libgcrypt-dev \
+    libotr5-dev \
+    libglib2.0-dev
+
 wget https://anti.teamidiot.de/static/nei/irssi-"$VERSION".tar.xz
 tar -xzf irssi-"$VERSION".tar.xz
 cd irssi-"$VERSION" || return
