@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 VERSION=1.3.0-pre8
+IRSSI="$HOME/irssi-$VERSION"
 
 sudo apt update && sudo apt install -y tcl-tls \
     libsqlite3-tcl \
@@ -11,9 +12,9 @@ sudo apt update && sudo apt install -y tcl-tls \
     libotr5-dev \
     libglib2.0-dev
 
-wget https://anti.teamidiot.de/static/nei/irssi-"$VERSION".tar.xz
-tar -xzf irssi-"$VERSION".tar.xz
-cd irssi-"$VERSION" || return
+wget https://anti.teamidiot.de/static/nei/irssi-"$VERSION".tar.xz -P "$HOME"
+tar -C "$HOME" -xzf "$IRSSI".tar.xz
+cd "$IRSSI" || return
 meson Build -Dwith-proxy=yes -Dwith-bot=yes -Denable-true-color=yes
 ninja -C Build
 sudo ninja -C Build install
