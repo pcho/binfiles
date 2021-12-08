@@ -91,7 +91,7 @@ rm -rf "$HOME"/mosh
 sudo ufw allow ssh
 sudo ufw allow http
 sudo ufw allow https
-sudo ufw allow 60000:61000/udp
+sudo ufw allow 60000:60005/udp
 sudo ufw enable
 
 # Generate dhparam cert
@@ -130,9 +130,6 @@ cd "$HOME"/vim || return
     make
 sudo make install
 cd && sudo rm -rfv "$HOME"/vim
-
-# Install httpie
-python3 -m pip install --upgrade https://github.com/httpie/httpie/archive/master.tar.gz
 
 # Cleanup bash files
 rm -rf "$HOME"/.bashrc
