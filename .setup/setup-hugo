@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-VERSION="0.89.4"
+VERSION="0.90.1"
 
 wget https://github.com/gohugoio/hugo/releases/download/v"$VERSION"/hugo_extended_"$VERSION"_Linux-64bit.tar.gz
 sudo tar -C /usr/local/bin -xzf hugo_extended_"$VERSION"_Linux-64bit.tar.gz
