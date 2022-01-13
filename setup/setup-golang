@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-VERSION="1.17.3"
+VERSION="1.17.5"
 
 wget https://golang.org/dl/go$VERSION.linux-amd64.tar.gz
 
