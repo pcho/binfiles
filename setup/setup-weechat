@@ -5,4 +5,4 @@ sudo apt-key adv --keyserver hkps://keys.openpgp.org --recv-keys 11E9DE8848F2B65
 echo "deb https://weechat.org/ubuntu hirsute main" | sudo tee /etc/apt/sources.list.d/weechat.list
 echo "deb-src https://weechat.org/ubuntu hirsute main" | sudo tee -a /etc/apt/sources.list.d/weechat.list
 
-sudo apt-get update && sudo apt-get upgrade && sudo apt-get install -y weechat-devel-curses weechat-devel-plugins weechat-devel-python weechat-devel-perl
+sudo apt-get update && sudo apt-get upgrade && sudo apt-get install -y weechat-curses weechat-plugins weechat-python weechat-perl
