@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-VERSION=1.3.0-pre8
+VERSION="1.3.2-an"
 IRSSI="irssi-$VERSION"
 
 sudo apt update && sudo apt install -y tcl-tls \
