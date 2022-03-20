@@ -111,6 +111,15 @@ sudo make install
 cd ..
 rm -rf "$HOME"/tmux
 
+# Build tmux-mem-cpu-load plugin for tmux
+git clone --depth=1 https://github.com/thewtex/tmux-mem-cpu-load "$HOME"/tmcl
+cd "$HOME"/tmcl || return
+cmake .
+make
+sudo make install
+cd ..
+rm -rf "$HOME"/tmcl
+
 # Build VIM from source
 git clone --depth=1 https://github.com/vim/vim.git "$HOME"/vim
 cd "$HOME"/vim || return
