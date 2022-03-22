@@ -89,6 +89,12 @@ sudo ufw enable
 # Generate dhparam cert
 screen -d -m sudo openssl dhparam -out /etc/ssl/certs/dhparam.pem 4096
 
+# Set hostname
+echo "Enter hostname:"
+read -r HOST_NAME
+sudo hostnamectl set-hostname "$HOST_NAME"
+echo "✔ Done"
+
 # Build mosh from source
 git clone --depth=1 https://github.com/mobile-shell/mosh "$HOME"/mosh
 cd "$HOME"/mosh || return
