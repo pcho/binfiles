@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+VERSION="1.18"
+
 # Add password to default user
 sudo passwd ubuntu
 
@@ -130,6 +132,32 @@ cd "$HOME"/vim || return
 make
 sudo make install
 cd && sudo rm -rfv "$HOME"/vim
+
+# Install Caddy
+sudo apt install -y debian-keyring debian-archive-keyring apt-transport-https
+curl -1sLf 'https://dl.cloudsmith.io/public/caddy/testing/gpg.key' | sudo tee /etc/apt/trusted.gpg.d/caddy-testing.asc
+curl -1sLf 'https://dl.cloudsmith.io/public/caddy/testing/debian.deb.txt' | sudo tee /etc/apt/sources.list.d/caddy-testing.list
+sudo apt-get update && sudo apt-get install -y caddy
+
+# Install Docker
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+echo "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list >/dev/null
+sudo apt-get update && sudo apt-get install -y \
+    docker-ce \
+    docker-ce-cli \
+    containerd.io
+
+# Install Node
+curl -fsSL https://deb.nodesource.com/setup_17.x | sudo -E bash -
+sudo apt-get update && sudo apt-get install -y nodejs
+
+# Install Go
+wget https://golang.org/dl/go$VERSION.linux-amd64.tar.gz
+sudo tar -C /usr/local -xzf go$VERSION.linux-amd64.tar.gz
+sudo rm -rf go$VERSION.linux-amd64.tar.gz
+
+# Install shfmt
+GO111MODULE=on go install mvdan.cc/sh/v3/cmd/shfmt@latest
 
 # Cleanup bash files
 rm -rf "$HOME"/.bashrc
