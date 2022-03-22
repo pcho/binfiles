@@ -79,16 +79,6 @@ sudo service ssh restart
 
 ssh-keygen -E sha256 -lf /etc/ssh/ssh_host_key.pub
 
-# Build mosh from source
-git clone --depth=1 https://github.com/mobile-shell/mosh "$HOME"/mosh
-cd "$HOME"/mosh || return
-sh autogen.sh
-./configure
-make
-sudo make install
-cd "$HOME" || return
-rm -rf "$HOME"/mosh
-
 # Open ports
 sudo ufw allow ssh
 sudo ufw allow http
@@ -99,11 +89,17 @@ sudo ufw enable
 # Generate dhparam cert
 screen -d -m sudo openssl dhparam -out /etc/ssl/certs/dhparam.pem 4096
 
-# Install fzf
-git clone --depth 1 https://github.com/junegunn/fzf.git "$HOME"/.fzf
-"$HOME"/.fzf/install
+# Build mosh from source
+git clone --depth=1 https://github.com/mobile-shell/mosh "$HOME"/mosh
+cd "$HOME"/mosh || return
+sh autogen.sh
+./configure
+make
+sudo make install
+cd "$HOME" || return
+rm -rf "$HOME"/mosh
 
-# Build TMUX from source
+# Build TMUX
 git clone --depth=1 https://github.com/tmux/tmux.git "$HOME"/tmux
 cd "$HOME"/tmux || return
 sh autogen.sh
@@ -113,7 +109,7 @@ sudo make install
 cd ..
 rm -rf "$HOME"/tmux
 
-# Build tmux-mem-cpu-load plugin for tmux
+# Build tmux-mem-cpu-load plugin
 git clone --depth=1 https://github.com/thewtex/tmux-mem-cpu-load "$HOME"/tmcl
 cd "$HOME"/tmcl || return
 cmake .
@@ -122,7 +118,7 @@ sudo make install
 cd ..
 rm -rf "$HOME"/tmcl
 
-# Build VIM from source
+# Build VIM
 git clone --depth=1 https://github.com/vim/vim.git "$HOME"/vim
 cd "$HOME"/vim || return
 ./configure \
@@ -132,6 +128,10 @@ cd "$HOME"/vim || return
 make
 sudo make install
 cd && sudo rm -rfv "$HOME"/vim
+
+# Install fzf
+git clone --depth 1 https://github.com/junegunn/fzf.git "$HOME"/.fzf
+"$HOME"/.fzf/install
 
 # Install Caddy
 sudo apt install -y debian-keyring debian-archive-keyring apt-transport-https
@@ -157,7 +157,7 @@ sudo tar -C /usr/local -xzf go$VERSION.linux-amd64.tar.gz
 sudo rm -rf go$VERSION.linux-amd64.tar.gz
 
 # Install shfmt
-GO111MODULE=on go install mvdan.cc/sh/v3/cmd/shfmt@latest
+go install mvdan.cc/sh/v3/cmd/shfmt@latest
 
 # Cleanup bash files
 rm -rf "$HOME"/.bashrc

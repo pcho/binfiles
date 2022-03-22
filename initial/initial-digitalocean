@@ -1,8 +1,0 @@
-#!/usr/bin/env bash
-
-# Create default user
-adduser ubuntu
-adduser ubuntu sudo
-
-# Copy default SSH key
-rsync --archive --chown=ubuntu:ubuntu ~/.ssh /home/ubuntu
