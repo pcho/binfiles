@@ -1,9 +1,20 @@
 #!/usr/bin/env bash
 
-VERSION="1.18"
+GO_VERSION="1.18"
+NODE_VERSION="17"
+
+echo "Enter hostname:"
+read -r HOSTNAME
+echo "Enter Username:"
+read -r USERNAME
+echo "Enter IPv4 Address:"
+read -r IPV4
+echo "Enter IPv6 Address:"
+read -r IPV6
+echo "✔ Done"
 
 # Add password to default user
-sudo passwd ubuntu
+sudo passwd "$USERNAME"
 
 # Link dotfiles
 ln -sfv "$HOME/.dotfiles/.vim" ~
@@ -74,10 +85,7 @@ sudo mv "$HOME"/ssh_host_key "$HOME"/ssh_host_key.pub /etc/ssh/
 sudo chown root:root /etc/ssh/ssh_host_key /etc/ssh/ssh_host_key.pub
 sudo chmod 0600 /etc/ssh/ssh_host_key
 sudo cp ~/.dotfiles/.config/sshd_config /etc/ssh/
-
 sudo service ssh restart
-
-ssh-keygen -E sha256 -lf /etc/ssh/ssh_host_key.pub
 
 # Open ports
 sudo ufw allow ssh
@@ -90,10 +98,11 @@ sudo ufw enable
 screen -d -m sudo openssl dhparam -out /etc/ssl/certs/dhparam.pem 4096
 
 # Set hostname
-echo "Enter hostname:"
-read -r HOST_NAME
-sudo hostnamectl set-hostname "$HOST_NAME"
-echo "✔ Done"
+sudo hostnamectl set-hostname "$HOSTNAME"
+
+# Add IP Addresses to /etc/hosts
+sudo sed -i '1 a '"$IPV4"' '"$HOSTNAME"'' /etc/hosts
+sudo sed -i '2 a '"$IPV6"' '"$HOSTNAME"'' /etc/hosts
 
 # Build mosh from source
 git clone --depth=1 https://github.com/mobile-shell/mosh "$HOME"/mosh
@@ -154,13 +163,13 @@ sudo apt-get update && sudo apt-get install -y \
     containerd.io
 
 # Install Node
-curl -fsSL https://deb.nodesource.com/setup_17.x | sudo -E bash -
+curl -fsSL https://deb.nodesource.com/setup_"$NODE_VERSION".x | sudo -E bash -
 sudo apt-get update && sudo apt-get install -y nodejs
 
 # Install Go
-wget https://golang.org/dl/go$VERSION.linux-amd64.tar.gz
-sudo tar -C /usr/local -xzf go$VERSION.linux-amd64.tar.gz
-sudo rm -rf go$VERSION.linux-amd64.tar.gz
+wget https://golang.org/dl/go"$GO_VERSION".linux-amd64.tar.gz
+sudo tar -C /usr/local -xzf go"$GO_VERSION".linux-amd64.tar.gz
+sudo rm -rf go"$GO_VERSION".linux-amd64.tar.gz
 
 # Install shfmt
 go install mvdan.cc/sh/v3/cmd/shfmt@latest
@@ -170,3 +179,6 @@ rm -rf "$HOME"/.bashrc
 rm -rf "$HOME"/.bash_history
 rm -rf "$HOME"/.bash_logout
 rm -rf "$HOME"/.profile
+
+# Show host key
+ssh-keygen -E sha256 -lf /etc/ssh/ssh_host_key.pub

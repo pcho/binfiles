@@ -2,16 +2,16 @@
 
 Shell scripts for different tasks.
 
-- **check-gitlab-ip** - check GitLab CI IP addresses for CI job
 - **extract** - helper script for extracting different archives
-- **imgcat** - [display images in terminal](https://iterm2.com/documentation-images.html)
-- **keygen** - SSH key generation helper
 - **rbbt** - check if system needs reboot
 
 ## .archive
 
 Mostly archived and unused:
 
+- **check-gitlab-ip** - check GitLab CI IP addresses for CI job
+- **imgcat** - [display images in terminal](https://iterm2.com/documentation-images.html)
+- **keygen** - SSH key generation helper
 - **addkeys** - add SSH keys
 - **convert_webm** - convert webm files
 - **docker-hasura** - install Hasura
@@ -25,16 +25,13 @@ Mostly archived and unused:
 - **unsplash-downloader** - download x amount of images from Unsplash
 - **update-fzf** - update fzf
 
-## .initial
+## initial
 
-Scripts that I run after creating new VPS or clean system install:
+Script that I run after creating new VPS or clean system install:
 
-- **cleanup** - cleaning unused dotiles
 - **initial** - link dotfiles and install most important software
-- **initial-aws** - change default users password
-- **initial-digitalocean** - create a new users and sync SSH key
 
-## .setup
+## setup
 
 Scripts that I run after clean install, they could be outdated or not working at all. Use with caution!
 
