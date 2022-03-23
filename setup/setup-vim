@@ -1,16 +1,17 @@
 #!/usr/bin/env bash
 
-git clone --depth=1 https://github.com/vim/vim.git $HOME/vim
-cd $HOME/vim || return
+git clone --depth=1 https://github.com/vim/vim.git "$HOME"/vim
+cd "$HOME"/vim || return
 ./configure \
     --with-features=huge \
     --enable-multibyte \
     --enable-python3interp=yes
 make
+# Check if using Blink Build if not install normally
 if [ -f /.dockerenv ]; then
     make install
-    cd && rm -rfv $HOME/vim
+    cd && rm -rfv "$HOME"/vim
 else
     sudo make install
-    cd && sudo rm -rfv $HOME/vim
+    cd && sudo rm -rfv "$HOME"/vim
 fi
