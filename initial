@@ -19,7 +19,6 @@ sudo passwd "$USERNAME"
 # Link dotfiles
 ln -sfv "$HOME/.dotfiles/.vim" ~
 ln -sfv "$HOME/.dotfiles/.bin" ~
-ln -sfv "$HOME/.dotfiles/.pip" ~
 ln -sfv "$HOME/.dotfiles/.zshenv" ~
 ln -sfv "$HOME/.dotfiles/.curlrc" ~
 ln -sfv "$HOME/.dotfiles/.tmux.conf" ~
