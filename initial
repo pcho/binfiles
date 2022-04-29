@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 GO_VERSION="1.18"
-NODE_VERSION="17"
+NODE_VERSION="18"
 
 echo "Enter hostname:"
 read -r HOSTNAME
