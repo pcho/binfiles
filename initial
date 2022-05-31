@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 
-GO_VERSION="1.18"
-NODE_VERSION="lts"
+GO_VERSION="1.18.2"
 
 echo "Enter hostname:"
 read -r HOSTNAME
@@ -147,20 +146,23 @@ git clone --depth 1 https://github.com/junegunn/fzf.git "$HOME"/.fzf
 
 # Install Caddy
 sudo apt install -y debian-keyring debian-archive-keyring apt-transport-https
-curl -1sLf 'https://dl.cloudsmith.io/public/caddy/testing/gpg.key' | sudo tee /etc/apt/trusted.gpg.d/caddy-testing.asc
+curl -1sLf 'https://dl.cloudsmith.io/public/caddy/testing/gpg.key' | sudo gpg --dearmor -o /usr/share/keyrings/caddy-testing-archive-keyring.gpg
 curl -1sLf 'https://dl.cloudsmith.io/public/caddy/testing/debian.deb.txt' | sudo tee /etc/apt/sources.list.d/caddy-testing.list
 sudo apt-get update && sudo apt-get install -y caddy
 
 # Install Docker
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
-echo "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list >/dev/null
+sudo mkdir -p /etc/apt/keyrings
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+echo \
+  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
+  $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 sudo apt-get update && sudo apt-get install -y \
     docker-ce \
     docker-ce-cli \
     containerd.io
 
 # Install Node
-curl -fsSL https://deb.nodesource.com/setup_"$NODE_VERSION".x | sudo -E bash -
+curl -fsSL https://deb.nodesource.com/setup_current.x | sudo -E bash -
 sudo apt-get update && sudo apt-get install -y nodejs
 
 # Install Go
