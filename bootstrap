@@ -33,34 +33,34 @@ cp "$HOME/.dotfiles/.config/config" "$HOME/.ssh/"
 
 # Update all packages and install essentials
 sudo apt-get update && sudo apt-get upgrade -y && sudo apt-get install -y \
-    build-essential \
-    libgd-dev \
-    libxslt-dev \
-    libgeoip-dev \
-    libssl-dev \
-    ncurses-dev \
-    libevent-dev \
-    libpcre++-dev \
-    python3-pip \
-    python3-venv \
-    ncdu \
-    htop \
-    fd-find \
-    zsh \
-    git \
-    dialog \
-    unzip \
-    autogen \
-    autoconf \
-    libtool \
-    bison \
-    cmake \
-    whois \
-    protobuf-compiler \
-    apt-transport-https \
-    shellcheck \
-    visidata \
-    silversearcher-ag
+  build-essential \
+  libgd-dev \
+  libxslt-dev \
+  libgeoip-dev \
+  libssl-dev \
+  ncurses-dev \
+  libevent-dev \
+  libpcre++-dev \
+  python3-pip \
+  python3-venv \
+  ncdu \
+  htop \
+  fd-find \
+  zsh \
+  git \
+  dialog \
+  unzip \
+  autogen \
+  autoconf \
+  libtool \
+  bison \
+  cmake \
+  whois \
+  protobuf-compiler \
+  apt-transport-https \
+  shellcheck \
+  visidata \
+  silversearcher-ag
 
 # Change default shell to ZSH for user and root
 chsh -s /usr/bin/zsh
@@ -73,10 +73,10 @@ sudo ln -snf /usr/share/zoneinfo/"$TZ" /etc/localtime && sudo dpkg-reconfigure -
 # Create host key
 cd "$HOME" || return
 ssh-keygen -t rsa \
-    -b 4096 \
-    -f ssh_host_key \
-    -C '' \
-    -N ''
+  -b 4096 \
+  -f ssh_host_key \
+  -C '' \
+  -N ''
 
 # Configure SSH
 sudo mv "$HOME"/ssh_host_key "$HOME"/ssh_host_key.pub /etc/ssh/
@@ -135,7 +135,7 @@ rm -rf "$HOME"/tmcl
 git clone --depth=1 https://github.com/vim/vim.git "$HOME"/vim
 cd "$HOME"/vim || return
 ./configure \
-    --with-features=huge
+  --with-features=huge
 make
 sudo make install
 cd && sudo rm -rfv "$HOME"/vim
@@ -157,9 +157,9 @@ echo \
   "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
   $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 sudo apt-get update && sudo apt-get install -y \
-    docker-ce \
-    docker-ce-cli \
-    containerd.io
+  docker-ce \
+  docker-ce-cli \
+  containerd.io
 
 # Install Node
 curl -fsSL https://deb.nodesource.com/setup_current.x | sudo -E bash -
