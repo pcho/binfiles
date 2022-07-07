@@ -170,6 +170,9 @@ wget https://golang.org/dl/go"$GO_VERSION".linux-amd64.tar.gz
 sudo tar -C /usr/local -xzf go"$GO_VERSION".linux-amd64.tar.gz
 sudo rm -rf go"$GO_VERSION".linux-amd64.tar.gz
 
+# Install shfmt
+go install mvdan.cc/sh/v3/cmd/shfmt@latest
+
 # Cleanup bash files
 rm -rf "$HOME"/.bashrc
 rm -rf "$HOME"/.bash_history
