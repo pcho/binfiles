@@ -33,34 +33,28 @@ cp "$HOME/.dotfiles/.config/config" "$HOME/.ssh/"
 
 # Update all packages and install essentials
 sudo apt-get update && sudo apt-get upgrade -y && sudo apt-get install -y \
+  apt-transport-https \
+  silversearcher-ag \
+  protobuf-compiler \
   build-essential \
-  libgd-dev \
-  libxslt-dev \
-  libgeoip-dev \
-  libssl-dev \
-  ncurses-dev \
-  libevent-dev \
-  libpcre++-dev \
-  python3-pip \
   python3-venv \
-  ncdu \
-  htop \
-  fd-find \
-  zsh \
-  git \
-  dialog \
-  unzip \
-  autogen \
+  libevent-dev \
+  python3-pip \
+  ncurses-dev \
+  pkg-config \
+  shellcheck \
   autoconf \
+  autogen \
+  fd-find \
   libtool \
-  bison \
   cmake \
   whois \
-  protobuf-compiler \
-  apt-transport-https \
-  shellcheck \
-  visidata \
-  silversearcher-ag
+  unzip \
+  bison \
+  ncdu \
+  htop \
+  zsh \
+  git \
 
 # Change default shell to ZSH for user and root
 chsh -s /usr/bin/zsh
@@ -164,6 +158,9 @@ sudo apt-get update && sudo apt-get install -y \
 # Install Node
 curl -fsSL https://deb.nodesource.com/setup_current.x | sudo -E bash -
 sudo apt-get update && sudo apt-get install -y nodejs
+
+# Install pnpm
+curl -fsSL https://get.pnpm.io/install.sh | sh -
 
 # Install Go
 wget https://golang.org/dl/go"$GO_VERSION".linux-amd64.tar.gz
