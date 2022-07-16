@@ -43,6 +43,7 @@ sudo apt-get update && sudo apt-get upgrade -y && sudo apt-get install -y \
   ncurses-dev \
   pkg-config \
   shellcheck \
+  libssl-dev \
   autoconf \
   autogen \
   fd-find \
