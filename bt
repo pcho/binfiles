@@ -120,12 +120,6 @@ configuration() {
   # Add IP Addresses to /etc/hosts
   sudo sed -i '1 a '"$IPV4"' '"$HOSTNAME"'' /etc/hosts
   sudo sed -i '2 a '"$IPV6"' '"$HOSTNAME"'' /etc/hosts
-
-  # Cleanup bash files
-  rm -rf "$HOME"/.bashrc
-  rm -rf "$HOME"/.bash_history
-  rm -rf "$HOME"/.bash_logout
-  rm -rf "$HOME"/.profile
 }
 
 # Show host key
@@ -288,6 +282,12 @@ clean_minimal() {
 }
 
 post_install() {
+  # Cleanup bash files
+  rm -rf "$HOME"/.bashrc
+  rm -rf "$HOME"/.bash_history
+  rm -rf "$HOME"/.bash_logout
+  rm -rf "$HOME"/.profile
+
   install_shfmt
   install_pnpm
 }
