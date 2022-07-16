@@ -1,181 +1,304 @@
 #!/usr/bin/env bash
 
-GO_VERSION="1.18.3"
+TL_VERSION="4.3.1"
+EGG_VERSION="1.9.2"
+GO_VERSION="1.18.4"
 
-echo "Enter hostname:"
-read -r HOSTNAME
-echo "Enter Username:"
-read -r USERNAME
-echo "Enter IPv4 Address:"
-read -r IPV4
-echo "Enter IPv6 Address:"
-read -r IPV6
-echo "✔ Done"
+help() {
+  cat << EOT
 
-# Add password to default user
-sudo passwd "$USERNAME"
+  System Setup Script
+  Usage: $(basename "$0") [option]
 
-# Link dotfiles
-ln -sfv "$HOME/.dotfiles/.vim" ~
-ln -sfv "$HOME/.dotfiles/.bin" ~
-ln -sfv "$HOME/.dotfiles/.zshenv" ~
-ln -sfv "$HOME/.dotfiles/.curlrc" ~
-ln -sfv "$HOME/.dotfiles/.tmux.conf" ~
-ln -sfv "$HOME/.dotfiles/.gitconfig" ~
-ln -sfv "$HOME/.dotfiles/.dircolors" ~
+  Options:
+    clean:      Configure clean VPS
+    post:       Install shftm & pnpm
+    vim:        Build VIM
+    tmux:       Build TMUX
+    cloud:      Install Cloud Torrent
+    tl:         Install The Lounge
+    egg:        Install eggdrop
 
-# Make some dirs
-mkdir "$HOME/.vim/undo"
-mkdir "$HOME/.dev"
+EOT
+}
 
-# Copy SSH settings
-cp "$HOME/.dotfiles/.config/config" "$HOME/.ssh/"
+# Configure clean VPS
+configuration() {
+  echo "Enter hostname:"
+  read -r HOSTNAME
+  echo "Enter Username:"
+  read -r USERNAME
+  echo "Enter IPv4 Address:"
+  read -r IPV4
+  echo "Enter IPv6 Address:"
+  read -r IPV6
+  echo "✔ Done"
 
-# Update all packages and install essentials
-sudo apt-get update && sudo apt-get upgrade -y && sudo apt-get install -y \
-  apt-transport-https \
-  silversearcher-ag \
-  protobuf-compiler \
-  build-essential \
-  python3-venv \
-  libevent-dev \
-  python3-pip \
-  ncurses-dev \
-  pkg-config \
-  shellcheck \
-  libssl-dev \
-  autoconf \
-  autogen \
-  fd-find \
-  libtool \
-  cmake \
-  whois \
-  unzip \
-  bison \
-  ncdu \
-  htop \
-  zsh \
-  git \
+  # Add password to default user
+  sudo passwd "$USERNAME"
 
-# Change default shell to ZSH for user and root
-chsh -s /usr/bin/zsh
-sudo chsh -s /usr/bin/zsh
+  # Link dotfiles
+  ln -sfv "$HOME/.dotfiles/.vim" ~
+  ln -sfv "$HOME/.dotfiles/.bin" ~
+  ln -sfv "$HOME/.dotfiles/.zshenv" ~
+  ln -sfv "$HOME/.dotfiles/.curlrc" ~
+  ln -sfv "$HOME/.dotfiles/.tmux.conf" ~
+  ln -sfv "$HOME/.dotfiles/.gitconfig" ~
+  ln -sfv "$HOME/.dotfiles/.dircolors" ~
 
-# Sets Timezone to EU/Berlin
-export TZ='Europe/Berlin'
-sudo ln -snf /usr/share/zoneinfo/"$TZ" /etc/localtime && sudo dpkg-reconfigure -f noninteractive tzdata
+  # Copy SSH settings
+  cp "$HOME/.dotfiles/.config/config" "$HOME/.ssh/"
 
-# Create host key
-cd "$HOME" || return
-ssh-keygen -t rsa \
-  -b 4096 \
-  -f ssh_host_key \
-  -C '' \
-  -N ''
+  # Update all packages and install essentials
+  sudo apt-get update && sudo apt-get upgrade -y && sudo apt-get install -y \
+    apt-transport-https \
+    silversearcher-ag \
+    protobuf-compiler \
+    build-essential \
+    python3-venv \
+    libevent-dev \
+    python3-pip \
+    ncurses-dev \
+    pkg-config \
+    shellcheck \
+    libssl-dev \
+    autoconf \
+    autogen \
+    fd-find \
+    libtool \
+    cmake \
+    whois \
+    unzip \
+    bison \
+    ncdu \
+    htop \
+    zsh \
+    git
 
-# Configure SSH
-sudo mv "$HOME"/ssh_host_key "$HOME"/ssh_host_key.pub /etc/ssh/
-sudo chown root:root /etc/ssh/ssh_host_key /etc/ssh/ssh_host_key.pub
-sudo chmod 0600 /etc/ssh/ssh_host_key
-sudo cp ~/.dotfiles/.config/sshd_config /etc/ssh/
-sudo service ssh restart
+  # Change default shell to ZSH for user and root
+  chsh -s /usr/bin/zsh
+  sudo chsh -s /usr/bin/zsh
 
-# Open ports
-sudo ufw allow ssh
-sudo ufw allow http
-sudo ufw allow https
-sudo ufw allow 60000:60005/udp
-sudo ufw enable
+  # Sets Timezone to EU/Berlin
+  export TZ='Europe/Berlin'
+  sudo ln -snf /usr/share/zoneinfo/"$TZ" /etc/localtime && sudo dpkg-reconfigure -f noninteractive tzdata
 
-# Generate dhparam cert
-screen -d -m sudo openssl dhparam -out /etc/ssl/certs/dhparam.pem 4096
+  # Create host key
+  cd "$HOME" || return
+  ssh-keygen -t rsa \
+    -b 4096 \
+    -f ssh_host_key \
+    -C '' \
+    -N ''
 
-# Set hostname
-sudo hostnamectl set-hostname "$HOSTNAME"
+  # Configure SSH
+  sudo mv "$HOME"/ssh_host_key "$HOME"/ssh_host_key.pub /etc/ssh/
+  sudo chown root:root /etc/ssh/ssh_host_key /etc/ssh/ssh_host_key.pub
+  sudo chmod 0600 /etc/ssh/ssh_host_key
+  sudo cp ~/.dotfiles/.config/sshd_config /etc/ssh/
+  sudo service ssh restart
 
-# Add IP Addresses to /etc/hosts
-sudo sed -i '1 a '"$IPV4"' '"$HOSTNAME"'' /etc/hosts
-sudo sed -i '2 a '"$IPV6"' '"$HOSTNAME"'' /etc/hosts
+  # Open ports
+  sudo ufw allow ssh
+  sudo ufw allow http
+  sudo ufw allow https
+  sudo ufw allow 60000:60005/udp
+  sudo ufw enable
 
-# Build mosh from source
-git clone --depth=1 https://github.com/mobile-shell/mosh "$HOME"/mosh
-cd "$HOME"/mosh || return
-sh autogen.sh
-./configure
-make
-sudo make install
-cd "$HOME" || return
-rm -rf "$HOME"/mosh
+  # Generate dhparam cert
+  screen -d -m sudo openssl dhparam -out /etc/ssl/certs/dhparam.pem 4096
 
-# Build TMUX
-git clone --depth=1 https://github.com/tmux/tmux.git "$HOME"/tmux
-cd "$HOME"/tmux || return
-sh autogen.sh
-./configure
-make
-sudo make install
-cd ..
-rm -rf "$HOME"/tmux
+  # Set hostname
+  sudo hostnamectl set-hostname "$HOSTNAME"
 
-# Build tmux-mem-cpu-load plugin
-git clone --depth=1 https://github.com/thewtex/tmux-mem-cpu-load "$HOME"/tmcl
-cd "$HOME"/tmcl || return
-cmake .
-make
-sudo make install
-cd ..
-rm -rf "$HOME"/tmcl
+  # Add IP Addresses to /etc/hosts
+  sudo sed -i '1 a '"$IPV4"' '"$HOSTNAME"'' /etc/hosts
+  sudo sed -i '2 a '"$IPV6"' '"$HOSTNAME"'' /etc/hosts
 
-# Build VIM
-git clone --depth=1 https://github.com/vim/vim.git "$HOME"/vim
-cd "$HOME"/vim || return
-./configure \
-  --with-features=huge
-make
-sudo make install
-cd && sudo rm -rfv "$HOME"/vim
-
-# Install fzf
-git clone --depth 1 https://github.com/junegunn/fzf.git "$HOME"/.fzf
-"$HOME"/.fzf/install
-
-# Install Caddy
-sudo apt install -y debian-keyring debian-archive-keyring apt-transport-https
-curl -1sLf 'https://dl.cloudsmith.io/public/caddy/testing/gpg.key' | sudo gpg --dearmor -o /usr/share/keyrings/caddy-testing-archive-keyring.gpg
-curl -1sLf 'https://dl.cloudsmith.io/public/caddy/testing/debian.deb.txt' | sudo tee /etc/apt/sources.list.d/caddy-testing.list
-sudo apt-get update && sudo apt-get install -y caddy
-
-# Install Docker
-sudo mkdir -p /etc/apt/keyrings
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
-echo \
-  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
-  $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-sudo apt-get update && sudo apt-get install -y \
-  docker-ce \
-  docker-ce-cli \
-  containerd.io
-
-# Install Node
-curl -fsSL https://deb.nodesource.com/setup_current.x | sudo -E bash -
-sudo apt-get update && sudo apt-get install -y nodejs
-
-# Install pnpm
-curl -fsSL https://get.pnpm.io/install.sh | sh -
-
-# Install Go
-wget https://golang.org/dl/go"$GO_VERSION".linux-amd64.tar.gz
-sudo tar -C /usr/local -xzf go"$GO_VERSION".linux-amd64.tar.gz
-sudo rm -rf go"$GO_VERSION".linux-amd64.tar.gz
-
-# Install shfmt
-go install mvdan.cc/sh/v3/cmd/shfmt@latest
-
-# Cleanup bash files
-rm -rf "$HOME"/.bashrc
-rm -rf "$HOME"/.bash_history
-rm -rf "$HOME"/.bash_logout
-rm -rf "$HOME"/.profile
+  # Cleanup bash files
+  rm -rf "$HOME"/.bashrc
+  rm -rf "$HOME"/.bash_history
+  rm -rf "$HOME"/.bash_logout
+  rm -rf "$HOME"/.profile
+}
 
 # Show host key
-ssh-keygen -E sha256 -lf /etc/ssh/ssh_host_key.pub
+show_key() {
+  ssh-keygen -E sha256 -lf /etc/ssh/ssh_host_key.pub
+}
+
+# Build mosh from source
+build_mosh() {
+  git clone --depth=1 https://github.com/mobile-shell/mosh "$HOME"/mosh
+  cd "$HOME"/mosh || return
+  sh autogen.sh
+  ./configure
+  make
+  sudo make install
+  cd "$HOME" || return
+  rm -rf "$HOME"/mosh
+}
+
+# Build TMUX
+build_tmux() {
+  git clone --depth=1 https://github.com/tmux/tmux.git "$HOME"/tmux
+  cd "$HOME"/tmux || return
+  sh autogen.sh
+  ./configure
+  make
+  sudo make install
+  cd ..
+  rm -rf "$HOME"/tmux
+
+}
+
+# Build tmux-mem-cpu-load plugin
+build_tmcl() {
+  git clone --depth=1 https://github.com/thewtex/tmux-mem-cpu-load "$HOME"/tmcl
+  cd "$HOME"/tmcl || return
+  cmake .
+  make
+  sudo make install
+  cd ..
+  rm -rf "$HOME"/tmcl
+}
+
+# Build VIM
+build_vim() {
+  git clone --depth=1 https://github.com/vim/vim.git "$HOME"/vim
+  cd "$HOME"/vim || return
+  ./configure \
+    --with-features=huge
+  make
+  sudo make install
+  cd && sudo rm -rfv "$HOME"/vim
+}
+
+# Build eggdrop
+build_egg() {
+  EGG="$HOME/eggdrop-$EGG_VERSION"
+
+  wget https://github.com/eggheads/eggdrop/releases/download/v"$EGG_VERSION"/eggdrop-"$EGG_VERSION".tar.gz -P "$HOME"
+
+  tar -C "$HOME" -zxvf "$EGG".tar.gz
+
+  sudo apt update && sudo apt install -y tcl \
+    tcl-dev \
+    tcl-trf \
+    tcl-tls \
+    libsqlite3-tcl \
+    tcllib
+
+  cd "$EGG" || return
+  ./configure
+  make config
+  make
+  make install
+  make sslcert
+  cd && rm -rfv "$EGG"
+}
+
+# Install fzf
+install_fzf() {
+  git clone --depth 1 https://github.com/junegunn/fzf.git "$HOME"/.fzf
+  "$HOME"/.fzf/install
+}
+
+# Install Caddy
+install_caddy() {
+  sudo apt install -y debian-keyring debian-archive-keyring apt-transport-https
+  curl -1sLf 'https://dl.cloudsmith.io/public/caddy/testing/gpg.key' | sudo gpg --dearmor -o /usr/share/keyrings/caddy-testing-archive-keyring.gpg
+  curl -1sLf 'https://dl.cloudsmith.io/public/caddy/testing/debian.deb.txt' | sudo tee /etc/apt/sources.list.d/caddy-testing.list
+  sudo apt-get update && sudo apt-get install -y caddy
+}
+
+# Install Docker
+install_docker() {
+  sudo mkdir -p /etc/apt/keyrings
+  curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+  echo \
+    "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
+  $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+  sudo apt-get update && sudo apt-get install -y \
+    docker-ce \
+    docker-ce-cli \
+    containerd.io
+}
+
+# Install Node
+install_node() {
+  curl -fsSL https://deb.nodesource.com/setup_current.x | sudo -E bash -
+  sudo apt-get update && sudo apt-get install -y nodejs
+}
+
+# Install pnpm
+install_pnpm() {
+  curl -fsSL https://get.pnpm.io/install.sh | sh -
+}
+
+# Install Go
+install_go() {
+  wget https://golang.org/dl/go"$GO_VERSION".linux-amd64.tar.gz
+  sudo tar -C /usr/local -xzf go"$GO_VERSION".linux-amd64.tar.gz
+  sudo rm -rf go"$GO_VERSION".linux-amd64.tar.gz
+}
+
+# Install Cloud Torrent
+install_cloud() {
+  sudo docker run --name torrent -d -p 3000:3000 -v /home/ubuntu/.downloads:/downloads jpillora/cloud-torrent
+}
+
+# Install The Lounge
+install_tl() {
+  sudo docker run --detach --name thelounge --publish 113:9001 --publish 9000:9000 --volume ~/.thelounge:/var/opt/thelounge --restart always thelounge/thelounge:$TL_VERSION
+}
+
+# Install shfmt
+install_shfmt() {
+  go install mvdan.cc/sh/v3/cmd/shfmt@latest
+}
+
+clean_install() {
+  configuration
+  build_mosh
+  build_tmux
+  build_tmcl
+  build_vim
+  install_fzf
+  install_caddy
+  install_docker
+  install_node
+  show_key
+}
+
+post_install() {
+  install_shfmt
+  install_pnpm
+}
+
+case $1 in
+  "clean")
+    clean_install
+    ;;
+  "post")
+    post_install
+    ;;
+  "vim")
+    build_vim
+    ;;
+  "tmux")
+    build_tmux
+    ;;
+  "cloud")
+    install_cloud
+    ;;
+  "tl")
+    install_tl
+    ;;
+  "egg")
+    build_egg
+    ;;
+  *)
+    help
+    ;;
+esac
