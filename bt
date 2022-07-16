@@ -12,9 +12,11 @@ help() {
 
   Options:
     clean:      Configure clean VPS
+    mini:       Configure minimal VPS
     post:       Install shftm & pnpm
     vim:        Build VIM
     tmux:       Build TMUX
+    go:         Install Go
     cloud:      Install Cloud Torrent
     tl:         Install The Lounge
     egg:        Install eggdrop
@@ -45,6 +47,10 @@ configuration() {
   ln -sfv "$HOME/.dotfiles/.tmux.conf" ~
   ln -sfv "$HOME/.dotfiles/.gitconfig" ~
   ln -sfv "$HOME/.dotfiles/.dircolors" ~
+
+  # Make some dirs
+  mkdir "$HOME/.vim/undo"
+  mkdir "$HOME/.dev"
 
   # Copy SSH settings
   cp "$HOME/.dotfiles/.config/config" "$HOME/.ssh/"
@@ -265,9 +271,19 @@ clean_install() {
   build_tmcl
   build_vim
   install_fzf
+  install_go
   install_caddy
   install_docker
   install_node
+  show_key
+}
+
+clean_minimal() {
+  configuration
+  build_tmux
+  build_tmcl
+  build_vim
+  install_fzf
   show_key
 }
 
@@ -280,6 +296,9 @@ case $1 in
   "clean")
     clean_install
     ;;
+  "mini")
+    clean_minimal
+    ;;
   "post")
     post_install
     ;;
@@ -288,6 +307,9 @@ case $1 in
     ;;
   "tmux")
     build_tmux
+    ;;
+  "go")
+    install_go
     ;;
   "cloud")
     install_cloud
