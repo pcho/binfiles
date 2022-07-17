@@ -29,6 +29,7 @@ help() {
     key:        Show host key
 
     fzf:        Update fzf
+    caddy:      Update Caddyfile
 
 EOT
 }
@@ -233,6 +234,25 @@ install_caddy() {
   sudo apt-get update && sudo apt-get install -y caddy
 }
 
+# Update Caddyfile
+update_caddyfile() {
+cat << EOT | sudo tee /etc/caddy/Caddyfile
+$HOSTNAME {
+    reverse_proxy 0.0.0.0:3030
+        log {
+            output file /var/log/caddy/access.log
+        }
+}
+
+cloud.$HOSTNAME {
+    reverse_proxy 0.0.0.0:3000
+        log {
+            output file /var/log/caddy/cloud.log
+        }
+}
+EOT
+}
+
 # Install Docker
 install_docker() {
   sudo mkdir -p /etc/apt/keyrings
@@ -361,6 +381,9 @@ case $1 in
     ;;
   "fzf")
     update_fzf
+    ;;
+  "caddy")
+    update_caddyfile
     ;;
   *)
     help
