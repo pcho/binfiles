@@ -316,6 +316,7 @@ clean_install() {
   install_fzf
   install_go
   install_caddy
+  update_caddyfile
   install_docker
   install_node
   show_key
