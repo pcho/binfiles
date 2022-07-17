@@ -37,9 +37,9 @@ EOT
 # Configure clean VPS
 configuration() {
   echo "Enter hostname:"
-  read -r HOSTNAME
+  read -r HNAME
   echo "Enter Username:"
-  read -r USERNAME
+  read -r UNAME
   echo "Enter IPv4 Address:"
   read -r IPV4
   echo "Enter IPv6 Address:"
@@ -47,7 +47,7 @@ configuration() {
   echo "✔ Done"
 
   # Add password to default user
-  sudo passwd "$USERNAME"
+  sudo passwd "$UNAME"
 
   # Link dotfiles
   ln -sfv "$HOME/.dotfiles/.vim" ~
@@ -111,7 +111,8 @@ configuration() {
   sudo mv "$HOME/ssh_host_key" "$HOME/ssh_host_key.pub" /etc/ssh/
   sudo chown root:root /etc/ssh/ssh_host_key /etc/ssh/ssh_host_key.pub
   sudo chmod 0600 /etc/ssh/ssh_host_key
-  sudo cp ~/.dotfiles/.config/sshd_config /etc/ssh/
+  sudo cp "$HOME/.dotfiles/.config/sshd_config" /etc/ssh/
+  sudo sed -in '0,/ubuntu/s//'"$UNAME"'/' /etc/ssh/sshd_config
   sudo service ssh restart
 
   # Open ports
@@ -125,11 +126,11 @@ configuration() {
   screen -d -m sudo openssl dhparam -out /etc/ssl/certs/dhparam.pem 4096
 
   # Set hostname
-  sudo hostnamectl set-hostname "$HOSTNAME"
+  sudo hostnamectl set-hostname "$HNAME"
 
   # Add IP Addresses to /etc/hosts
-  sudo sed -i '1 a '"$IPV4"' '"$HOSTNAME"'' /etc/hosts
-  sudo sed -i '2 a '"$IPV6"' '"$HOSTNAME"'' /etc/hosts
+  sudo sed -i '1 a '"$IPV4"' '"$HNAME"'' /etc/hosts
+  sudo sed -i '2 a '"$IPV6"' '"$HNAME"'' /etc/hosts
 }
 
 # Show host key
@@ -236,15 +237,15 @@ install_caddy() {
 
 # Update Caddyfile
 update_caddyfile() {
-cat << EOT | sudo tee /etc/caddy/Caddyfile
-$HOSTNAME {
+  cat << EOT | sudo tee /etc/caddy/Caddyfile
+$HNAME {
     reverse_proxy 0.0.0.0:3030
         log {
             output file /var/log/caddy/access.log
         }
 }
 
-cloud.$HOSTNAME {
+cloud.$HNAME {
     reverse_proxy 0.0.0.0:3000
         log {
             output file /var/log/caddy/cloud.log
