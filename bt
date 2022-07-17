@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+GH_VERSION="2.14.2"
 TL_VERSION="4.3.1"
 EGG_VERSION="1.9.2"
 GO_VERSION="1.18.4"
@@ -14,12 +15,20 @@ help() {
     clean:      Configure clean VPS
     mini:       Configure minimal VPS
     post:       Install shftm & pnpm
+
     vim:        Build VIM
     tmux:       Build TMUX
+
     go:         Install Go
+    gh:         Install GitHub CLI
     cloud:      Install Cloud Torrent
+    pnpm:       Install pnpm
     tl:         Install The Lounge
     egg:        Install eggdrop
+
+    key:        Show host key
+
+    fzf:        Update fzf
 
 EOT
 }
@@ -98,7 +107,7 @@ configuration() {
     -N ''
 
   # Configure SSH
-  sudo mv "$HOME"/ssh_host_key "$HOME"/ssh_host_key.pub /etc/ssh/
+  sudo mv "$HOME/ssh_host_key" "$HOME/ssh_host_key.pub" /etc/ssh/
   sudo chown root:root /etc/ssh/ssh_host_key /etc/ssh/ssh_host_key.pub
   sudo chmod 0600 /etc/ssh/ssh_host_key
   sudo cp ~/.dotfiles/.config/sshd_config /etc/ssh/
@@ -129,49 +138,49 @@ show_key() {
 
 # Build mosh from source
 build_mosh() {
-  git clone --depth=1 https://github.com/mobile-shell/mosh "$HOME"/mosh
-  cd "$HOME"/mosh || return
+  git clone --depth=1 https://github.com/mobile-shell/mosh "$HOME/mosh"
+  cd "$HOME/mosh" || return
   sh autogen.sh
   ./configure
   make
   sudo make install
-  cd "$HOME" || return
-  rm -rf "$HOME"/mosh
+  cd "$HOME" || exit
+  rm -rfv "$HOME/mosh"
 }
 
 # Build TMUX
 build_tmux() {
-  git clone --depth=1 https://github.com/tmux/tmux.git "$HOME"/tmux
-  cd "$HOME"/tmux || return
+  git clone --depth=1 https://github.com/tmux/tmux.git "$HOME/tmux"
+  cd "$HOME/tmux" || return
   sh autogen.sh
   ./configure
   make
   sudo make install
   cd ..
-  rm -rf "$HOME"/tmux
+  rm -rfv "$HOME/tmux"
 
 }
 
 # Build tmux-mem-cpu-load plugin
 build_tmcl() {
-  git clone --depth=1 https://github.com/thewtex/tmux-mem-cpu-load "$HOME"/tmcl
-  cd "$HOME"/tmcl || return
+  git clone --depth=1 https://github.com/thewtex/tmux-mem-cpu-load "$HOME/tmcl"
+  cd "$HOME/tmcl" || return
   cmake .
   make
   sudo make install
   cd ..
-  rm -rf "$HOME"/tmcl
+  rm -rfv "$HOME/tmcl"
 }
 
 # Build VIM
 build_vim() {
-  git clone --depth=1 https://github.com/vim/vim.git "$HOME"/vim
-  cd "$HOME"/vim || return
+  git clone --depth=1 https://github.com/vim/vim.git "$HOME/vim"
+  cd "$HOME/vim" || return
   ./configure \
     --with-features=huge
   make
   sudo make install
-  cd && sudo rm -rfv "$HOME"/vim
+  cd && sudo rm -rfv "$HOME/vim"
 }
 
 # Build eggdrop
@@ -200,8 +209,20 @@ build_egg() {
 
 # Install fzf
 install_fzf() {
-  git clone --depth 1 https://github.com/junegunn/fzf.git "$HOME"/.fzf
-  "$HOME"/.fzf/install
+  git clone --depth 1 https://github.com/junegunn/fzf.git "$HOME/.fzf"
+  "$HOME/.fzf/install"
+}
+
+# Update fzf
+update_fzf() {
+  if [[ -d "$HOME/.fzf" ]]; then
+    cd "$HOME/.fzf" || return
+    if [ "$(git status --porcelain | wc -l)" -gt 0 ]; then
+      git pull && ./install
+    else
+      echo "✔ You have the newest fzf version"
+    fi
+  fi
 }
 
 # Install Caddy
@@ -238,9 +259,9 @@ install_pnpm() {
 
 # Install Go
 install_go() {
-  wget https://golang.org/dl/go"$GO_VERSION".linux-amd64.tar.gz
-  sudo tar -C /usr/local -xzf go"$GO_VERSION".linux-amd64.tar.gz
-  sudo rm -rf go"$GO_VERSION".linux-amd64.tar.gz
+  wget https://golang.org/dl/go"$GO_VERSION".linux-amd64.tar.gz -P "$HOME"
+  sudo tar -C /usr/local -xzf "$HOME"/go"$GO_VERSION".linux-amd64.tar.gz
+  sudo rm -rfv "$HOME"/go"$GO_VERSION".linux-amd64.tar.gz
 }
 
 # Install Cloud Torrent
@@ -250,12 +271,20 @@ install_cloud() {
 
 # Install The Lounge
 install_tl() {
-  sudo docker run --detach --name thelounge --publish 113:9001 --publish 9000:9000 --volume ~/.thelounge:/var/opt/thelounge --restart always thelounge/thelounge:$TL_VERSION
+  sudo docker run --detach --name thelounge --publish 113:9001 --publish 9000:9000 --volume ~/.thelounge:/var/opt/thelounge --restart always thelounge/thelounge:"$TL_VERSION"
 }
 
 # Install shfmt
 install_shfmt() {
   go install mvdan.cc/sh/v3/cmd/shfmt@latest
+}
+
+# Install GitHub CLI
+install_gh() {
+  wget https://github.com/cli/cli/releases/download/v"$GH_VERSION"/gh_"$GH_VERSION"_linux_amd64.deb -P "$HOME"
+  sudo dpkg -i "$HOME"/gh_"$GH_VERSION"_linux_amd64.deb
+  rm -rfv "$HOME"/gh_"$GH_VERSION"_linux_amd64.deb
+  gh auth login
 }
 
 clean_install() {
@@ -283,11 +312,12 @@ clean_minimal() {
 
 post_install() {
   # Cleanup bash files
-  rm -rf "$HOME"/.bashrc
-  rm -rf "$HOME"/.bash_history
-  rm -rf "$HOME"/.bash_logout
-  rm -rf "$HOME"/.profile
+  rm -rf "$HOME/.bashrc"
+  rm -rf "$HOME/.bash_history"
+  rm -rf "$HOME/.bash_logout"
+  rm -rf "$HOME/.profile"
 
+  # Install shfmt and pnpm
   install_shfmt
   install_pnpm
 }
@@ -314,11 +344,23 @@ case $1 in
   "cloud")
     install_cloud
     ;;
+  "pnpm")
+    install_pnpm
+    ;;
   "tl")
     install_tl
     ;;
+  "gh")
+    install_gh
+    ;;
   "egg")
     build_egg
+    ;;
+  "key")
+    show_key
+    ;;
+  "fzf")
+    update_fzf
     ;;
   *)
     help
