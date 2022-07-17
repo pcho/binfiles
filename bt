@@ -23,6 +23,7 @@ help() {
     gh:         Install GitHub CLI
     cloud:      Install Cloud Torrent
     pnpm:       Install pnpm
+    shfmt:      Install shfmt
     tl:         Install The Lounge
     egg:        Install eggdrop
 
@@ -368,6 +369,9 @@ case $1 in
     ;;
   "pnpm")
     install_pnpm
+    ;;
+  "shfmt")
+    install_shfmt
     ;;
   "tl")
     install_tl
