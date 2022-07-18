@@ -18,6 +18,7 @@ help() {
 
     vim:        Build VIM
     tmux:       Build TMUX
+    mosh:       Build MOSH
 
     go:         Install Go
     gh:         Install GitHub CLI
@@ -322,6 +323,7 @@ clean_install() {
   install_docker
   install_node
   show_key
+  echo -e "\033]777;notify;Bootstrap;System setup complete\a"
 }
 
 clean_minimal() {
@@ -331,6 +333,7 @@ clean_minimal() {
   build_vim
   install_fzf
   show_key
+  echo -e "\033]777;notify;Bootstrap;System setup complete\a"
 }
 
 post_install() {
@@ -357,6 +360,9 @@ case $1 in
     ;;
   "vim")
     build_vim
+    ;;
+  "mosh")
+    build_mosh
     ;;
   "tmux")
     build_tmux
