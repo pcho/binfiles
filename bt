@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+NCDU_VERSION="2.1.2"
 GH_VERSION="2.14.2"
 TL_VERSION="4.3.1"
 EGG_VERSION="1.9.2"
@@ -19,6 +20,7 @@ help() {
     vim:        Build VIM
     tmux:       Build TMUX
     mosh:       Build MOSH
+    ncdu:       Build NCDU
 
     go:         Install Go
     gh:         Install GitHub CLI
@@ -88,7 +90,6 @@ configuration() {
     whois \
     unzip \
     bison \
-    ncdu \
     htop \
     zsh \
     git
@@ -209,6 +210,17 @@ build_egg() {
   make install
   make sslcert
   cd && rm -rfv "$EGG"
+}
+
+# Build NCDU
+build_ncdu() {
+  sudo snap install zig --classic --beta
+  wget https://dev.yorhel.nl/download/ncdu-"$NCDU_VERSION".tar.gz -P "$HOME"
+  cd "$HOME/ncdu-$NCDU_VERSION" || return
+  sudo make
+  sudo make install
+  cd && sudo rm -rfv "ncdu-$NCDU_VERSION"
+  echo "--color off" | sudo tee /etc/ncdu.conf
 }
 
 # Install fzf
@@ -343,9 +355,10 @@ post_install() {
   rm -rf "$HOME/.bash_logout"
   rm -rf "$HOME/.profile"
 
-  # Install shfmt and pnpm
+  # Install shfmt, pnpm, and NCDU
   install_shfmt
   install_pnpm
+  build_ncdu
 }
 
 case $1 in
@@ -367,6 +380,12 @@ case $1 in
   "tmux")
     build_tmux
     ;;
+  "egg")
+    build_egg
+    ;;
+  "ncdu")
+    build_ncdu
+    ;;
   "go")
     install_go
     ;;
@@ -384,9 +403,6 @@ case $1 in
     ;;
   "gh")
     install_gh
-    ;;
-  "egg")
-    build_egg
     ;;
   "key")
     show_key
