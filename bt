@@ -216,6 +216,7 @@ build_egg() {
 build_ncdu() {
   sudo snap install zig --classic --beta
   wget https://dev.yorhel.nl/download/ncdu-"$NCDU_VERSION".tar.gz -P "$HOME"
+  tar -C "$HOME" -zxvf "$HOME/ncdu-$NCDU_VERSION.tar.gz"
   cd "$HOME/ncdu-$NCDU_VERSION" || return
   sudo make
   sudo make install
