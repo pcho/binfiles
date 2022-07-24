@@ -10,6 +10,10 @@ help() {
   cat << EOT
 
   System Setup Script
+
+  Script for setting up my remote development machine.
+  Primarily for use with Blink Shell on iPad.
+
   Usage: $(basename "$0") [option]
 
   Options:
@@ -42,8 +46,6 @@ EOT
 configuration() {
   echo "Enter hostname:"
   read -r HNAME
-  echo "Enter Username:"
-  read -r UNAME
   echo "Enter IPv4 Address:"
   read -r IPV4
   echo "Enter IPv6 Address:"
@@ -51,7 +53,7 @@ configuration() {
   echo "✔ Done"
 
   # Add password to default user
-  sudo passwd "$UNAME"
+  sudo passwd "$USER"
 
   # Link dotfiles
   ln -sfv "$HOME/.dotfiles/.vim" ~
@@ -115,7 +117,7 @@ configuration() {
   sudo chown root:root /etc/ssh/ssh_host_key /etc/ssh/ssh_host_key.pub
   sudo chmod 0600 /etc/ssh/ssh_host_key
   sudo cp "$HOME/.dotfiles/.config/sshd_config" /etc/ssh/
-  sudo sed -in '0,/ubuntu/s//'"$UNAME"'/' /etc/ssh/sshd_config
+  sudo sed -in '0,/ubuntu/s//'"$USER"'/' /etc/ssh/sshd_config
   sudo service ssh restart
 
   # Open ports
